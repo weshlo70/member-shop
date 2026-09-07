@@ -1,0 +1,308 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+
+<head>
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>會員專區</title>
+
+    <link
+        rel="stylesheet"
+        href="style.css"
+    >
+</head>
+
+<body>
+
+<div class="app">
+
+    <!-- =========================
+         登入頁
+    ========================== -->
+
+    <section
+        id="loginPage"
+        class="page login-page"
+    >
+
+        <div class="login-card">
+
+            <div class="logo">
+                會員專區
+            </div>
+
+            <div class="subtitle">
+                歡迎登入
+            </div>
+
+
+            <div class="form-group">
+
+                <label>
+                    會員編號
+                </label>
+
+                <input
+                    id="memberId"
+                    type="text"
+                    placeholder="請輸入會員編號"
+                    autocomplete="username"
+                >
+
+            </div>
+
+
+            <div class="form-group">
+
+                <label>
+                    身分證末4碼
+                </label>
+
+                <input
+                    id="idLast4"
+                    type="password"
+                    maxlength="4"
+                    inputmode="numeric"
+                    placeholder="請輸入末4碼"
+                    autocomplete="current-password"
+                >
+
+            </div>
+
+
+            <button
+                id="loginButton"
+                class="primary-button"
+            >
+                登入會員
+            </button>
+
+
+            <div
+                id="loginMessage"
+                class="message"
+            ></div>
+
+        </div>
+
+    </section>
+
+
+    <!-- =========================
+         會員首頁
+    ========================== -->
+
+    <section
+        id="homePage"
+        class="page hidden"
+    >
+
+        <header class="header">
+
+            <div class="header-title">
+                會員專區
+            </div>
+
+            <button
+                id="logoutButton"
+                class="logout-button"
+            >
+                登出
+            </button>
+
+        </header>
+
+
+        <main class="container">
+
+            <div class="welcome">
+                <div class="welcome-small">
+                    歡迎回來
+                </div>
+
+                <div
+                    id="memberName"
+                    class="member-name"
+                >
+                    --
+                </div>
+            </div>
+
+
+            <!-- 餘額 -->
+
+            <div class="balance-card">
+
+                <div class="balance-title">
+                    目前儲值餘額
+                </div>
+
+                <div
+                    id="memberBalance"
+                    class="balance"
+                >
+                    $0
+                </div>
+
+                <button class="deposit-button">
+                    ＋ 我要儲值
+                </button>
+
+            </div>
+
+
+            <!-- 會員資訊 -->
+
+            <div class="info-card">
+
+                <div class="card-title">
+                    會員資料
+                </div>
+
+
+                <div class="info-row">
+
+                    <span>
+                        會員編號
+                    </span>
+
+                    <strong id="memberIdDisplay">
+                        --
+                    </strong>
+
+                </div>
+
+
+                <div class="info-row">
+
+                    <span>
+                        會員姓名
+                    </span>
+
+                    <strong id="memberNameDisplay">
+                        --
+                    </strong>
+
+                </div>
+
+            </div>
+
+
+            <!-- 功能 -->
+
+            <div class="menu-grid">
+
+                <button class="menu-card">
+
+                    <div class="menu-icon">
+                        🛒
+                    </div>
+
+                    <div>
+                        <div class="menu-title">
+                            商品商城
+                        </div>
+
+                        <div class="menu-description">
+                            瀏覽商品並下單
+                        </div>
+                    </div>
+
+                </button>
+
+
+                <button class="menu-card">
+
+                    <div class="menu-icon">
+                        📦
+                    </div>
+
+                    <div>
+                        <div class="menu-title">
+                            我的訂單
+                        </div>
+
+                        <div class="menu-description">
+                            查看歷史訂單
+                        </div>
+                    </div>
+
+                </button>
+
+
+                <button class="menu-card">
+
+                    <div class="menu-icon">
+                        💰
+                    </div>
+
+                    <div>
+                        <div class="menu-title">
+                            儲值紀錄
+                        </div>
+
+                        <div class="menu-description">
+                            查看儲值紀錄
+                        </div>
+                    </div>
+
+                </button>
+
+
+                <button class="menu-card">
+
+                    <div class="menu-icon">
+                        👤
+                    </div>
+
+                    <div>
+                        <div class="menu-title">
+                            會員資料
+                        </div>
+
+                        <div class="menu-description">
+                            查看會員資訊
+                        </div>
+                    </div>
+
+                </button>
+
+            </div>
+
+        </main>
+
+    </section>
+
+
+    <!-- 載入畫面 -->
+
+    <div
+        id="loading"
+        class="loading hidden"
+    >
+
+        <div class="loading-box">
+
+            <div class="spinner"></div>
+
+            <div>
+                處理中...
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+<script src="app.js"></script>
+
+</body>
+
+</html>
