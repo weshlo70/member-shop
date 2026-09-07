@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+
+<head>
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>儲值紀錄</title>
+
+    <link
+        rel="stylesheet"
+        href="style.css"
+    >
+</head>
+
+<body>
+
+<div class="app">
+
+    <!-- Header -->
+    <header class="header">
+
+        <button
+            class="back-button"
+            onclick="window.location.href='index.html'"
+        >
+            ←
+        </button>
+
+        <div class="header-title">
+            儲值紀錄
+        </div>
+
+        <div></div>
+
+    </header>
+
+
+    <main class="container">
+
+        <!-- 目前餘額 -->
+        <div class="balance-card">
+
+            <div class="balance-title">
+                目前儲值餘額
+            </div>
+
+            <div
+                id="memberBalance"
+                class="balance"
+            >
+                $0
+            </div>
+
+        </div>
+
+
+        <!-- 儲值說明 -->
+        <div class="info-card">
+
+            <div class="card-title">
+                儲值方式
+            </div>
+
+            <div class="topup-description">
+
+                <p>
+                    請先將款項匯入指定帳戶，
+                    再填寫下方匯款資料。
+                </p>
+
+                <p>
+                    我們確認收到款項後，
+                    才會將金額加入您的會員餘額。
+                </p>
+
+                <div class="topup-notice">
+                    ⚠️ 送出申請後，餘額不會立即增加。
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- 儲值申請 -->
+        <div class="info-card">
+
+            <div class="card-title">
+                我要申請儲值
+            </div>
+
+
+            <!-- 金額 -->
+            <div class="form-group">
+
+                <label for="amount">
+                    匯款金額
+                </label>
+
+                <input
+                    id="amount"
+                    type="number"
+                    min="1"
+                    step="1"
+                    placeholder="請輸入匯款金額"
+                >
+
+            </div>
+
+
+            <!-- 日期 -->
+            <div class="form-group">
+
+                <label for="transferDate">
+                    匯款日期
+                </label>
+
+                <input
+                    id="transferDate"
+                    type="date"
+                >
+
+            </div>
+
+
+            <!-- 時間 -->
+            <div class="form-group">
+
+                <label for="transferTime">
+                    匯款時間
+                </label>
+
+                <input
+                    id="transferTime"
+                    type="time"
+                >
+
+            </div>
+
+
+            <!-- 銀行 -->
+            <div class="form-group">
+
+                <label for="bank">
+                    匯款銀行
+                </label>
+
+                <input
+                    id="bank"
+                    type="text"
+                    placeholder="例如：台新銀行"
+                >
+
+            </div>
+
+
+            <!-- 帳號後五碼 -->
+            <div class="form-group">
+
+                <label for="accountLast5">
+                    匯款帳號後五碼
+                </label>
+
+                <input
+                    id="accountLast5"
+                    type="text"
+                    maxlength="5"
+                    inputmode="numeric"
+                    placeholder="請輸入5位數字"
+                >
+
+            </div>
+
+
+            <!-- 備註 -->
+            <div class="form-group">
+
+                <label for="note">
+                    備註（選填）
+                </label>
+
+                <input
+                    id="note"
+                    type="text"
+                    placeholder="其他需要告知的資訊"
+                >
+
+            </div>
+
+
+            <button
+                id="submitTopupButton"
+                class="primary-button"
+            >
+                送出儲值申請
+            </button>
+
+
+            <div
+                id="topupMessage"
+                class="message"
+            ></div>
+
+        </div>
+
+
+        <!-- 儲值紀錄 -->
+        <div class="info-card">
+
+            <div class="card-title">
+                我的儲值申請
+            </div>
+
+            <div
+                id="topupList"
+                class="topup-list"
+            >
+
+                <div class="topup-loading">
+                    載入中...
+                </div>
+
+            </div>
+
+        </div>
+
+    </main>
+
+
+    <!-- Loading -->
+    <div
+        id="loading"
+        class="loading hidden"
+    >
+
+        <div class="loading-box">
+
+            <div class="spinner"></div>
+
+            <div>
+                處理中...
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+<script src="topup.js"></script>
+
+</body>
+
+</html>
