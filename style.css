@@ -1763,3 +1763,140 @@ button {
     }
 
 }
+/* =========================
+   儲值成功視窗
+   ========================= */
+
+.topup-success-modal {
+
+    position: fixed;
+
+    inset: 0;
+
+    background:
+        rgba(0, 0, 0, 0.45);
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    padding: 20px;
+
+    z-index: 2000;
+
+}
+
+
+.topup-success-box {
+
+    width: 100%;
+
+    max-width: 400px;
+
+    background: white;
+
+    border-radius: 18px;
+
+    padding: 30px;
+
+    text-align: center;
+
+    box-shadow:
+        0 15px 40px
+        rgba(0, 0, 0, 0.15);
+
+}
+
+
+.topup-success-icon {
+
+    width: 60px;
+
+    height: 60px;
+
+    margin: 0 auto 15px;
+
+    border-radius: 50%;
+
+    background: #f0f0f0;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    font-size: 30px;
+
+    font-weight: 700;
+
+}
+
+
+.topup-success-title {
+
+    font-size: 21px;
+
+    font-weight: 700;
+
+    margin-bottom: 25px;
+
+}
+
+
+.topup-success-text {
+
+    padding: 18px;
+
+    background: #f7f7f7;
+
+    border-radius: 12px;
+
+}
+
+
+.success-label {
+
+    color: #999;
+
+    font-size: 13px;
+
+}
+
+
+.success-request-id {
+
+    margin-top: 5px;
+
+    font-size: 17px;
+
+    font-weight: 700;
+
+}
+
+
+.success-status-label {
+
+    margin-top: 18px;
+
+}
+
+
+.success-status {
+
+    margin-top: 5px;
+
+    font-size: 15px;
+
+    font-weight: 600;
+
+}
+
+
+.topup-success-box .primary-button {
+
+    margin-top: 20px;
+
+}
