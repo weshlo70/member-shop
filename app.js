@@ -2,7 +2,7 @@
 // Apps Script API 網址
 // ========================================
 
-const API_URL =
+const API_URL = "https://script.google.com/macros/s/AKfycbzoiQXbZQt12Ez_2yz2aQo4guCJwrmggYgGZr2XhB1N0xXXXH7qLUmp4-9xzDhMCvtN/exec"
     "請把你的 Apps Script 網址貼在這裡";
 
 
