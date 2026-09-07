@@ -1,1 +1,209 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
 
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>商品商城</title>
+
+    <link
+        rel="stylesheet"
+        href="style.css"
+    >
+
+</head>
+
+
+<body>
+
+
+<div class="app">
+
+
+    <!-- =========================
+         Header
+    ========================== -->
+
+    <header class="header">
+
+        <button
+            class="back-button"
+            onclick="goHome()"
+        >
+            ←
+        </button>
+
+
+        <div class="header-title">
+            商品商城
+        </div>
+
+
+        <button
+            class="cart-button"
+            onclick="openCart()"
+        >
+
+            🛒
+
+            <span
+                id="cartCount"
+                class="cart-count"
+            >
+                0
+            </span>
+
+        </button>
+
+    </header>
+
+
+
+    <!-- =========================
+         商品頁
+    ========================== -->
+
+    <main class="container">
+
+
+        <div class="shop-title">
+
+            <div>
+
+                <div class="shop-main-title">
+                    商品商城
+                </div>
+
+                <div class="shop-subtitle">
+                    選擇您需要的商品
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- 商品列表 -->
+
+        <div
+            id="productList"
+            class="product-grid"
+        >
+
+            <div class="product-loading">
+                商品載入中...
+            </div>
+
+        </div>
+
+
+    </main>
+
+
+
+    <!-- =========================
+         購物車抽屜
+    ========================== -->
+
+    <div
+        id="cartOverlay"
+        class="cart-overlay hidden"
+    >
+
+        <div
+            class="cart-panel"
+        >
+
+            <div class="cart-header">
+
+                <div>
+                    購物車
+                </div>
+
+                <button
+                    onclick="closeCart()"
+                    class="close-button"
+                >
+                    ×
+                </button>
+
+            </div>
+
+
+            <div
+                id="cartItems"
+                class="cart-items"
+            >
+            </div>
+
+
+            <div class="cart-footer">
+
+                <div class="cart-total-row">
+
+                    <span>
+                        合計
+                    </span>
+
+                    <strong
+                        id="cartTotal"
+                    >
+                        $0
+                    </strong>
+
+                </div>
+
+
+                <button
+                    class="primary-button"
+                    onclick="goCheckout()"
+                >
+                    確認購物車
+                </button>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- =========================
+         Loading
+    ========================== -->
+
+    <div
+        id="loading"
+        class="loading hidden"
+    >
+
+        <div class="loading-box">
+
+            <div class="spinner"></div>
+
+            <div>
+                處理中...
+            </div>
+
+        </div>
+
+    </div>
+
+
+</div>
+
+
+<script src="app.js"></script>
+
+<script src="products.js"></script>
+
+
+</body>
+
+</html>
