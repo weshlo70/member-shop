@@ -1162,3 +1162,390 @@ button {
     cursor: not-allowed;
 
 }
+
+/* =========================
+   我的訂單
+========================= */
+
+.orders-list {
+
+    display: flex;
+
+    flex-direction: column;
+
+    gap: 15px;
+
+}
+
+
+.order-card {
+
+    background: white;
+
+    border-radius: 16px;
+
+    padding: 20px;
+
+    box-shadow:
+        0 3px 15px
+        rgba(0, 0, 0, 0.05);
+
+    cursor: pointer;
+
+    transition:
+        transform 0.15s ease;
+
+}
+
+
+.order-card:hover {
+
+    transform:
+        translateY(-2px);
+
+}
+
+
+.order-card-top {
+
+    display: flex;
+
+    align-items: flex-start;
+
+    justify-content: space-between;
+
+    gap: 15px;
+
+}
+
+
+.order-id {
+
+    font-size: 16px;
+
+    font-weight: 700;
+
+}
+
+
+.order-date {
+
+    margin-top: 5px;
+
+    color: #999;
+
+    font-size: 13px;
+
+}
+
+
+.order-summary {
+
+    margin-top: 18px;
+
+    color: #555;
+
+    font-size: 15px;
+
+}
+
+
+.order-card-bottom {
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: space-between;
+
+    margin-top: 18px;
+
+    padding-top: 15px;
+
+    border-top:
+        1px solid #eee;
+
+    color: #999;
+
+    font-size: 13px;
+
+}
+
+
+.order-card-bottom strong {
+
+    color: #222;
+
+    font-size: 19px;
+
+}
+
+
+.order-view {
+
+    margin-top: 15px;
+
+    text-align: right;
+
+    color: #777;
+
+    font-size: 13px;
+
+}
+
+
+.status-success,
+.status-pending,
+.status-cancelled {
+
+    padding: 5px 10px;
+
+    border-radius: 20px;
+
+    font-size: 12px;
+
+    white-space: nowrap;
+
+}
+
+
+.status-success {
+
+    background: #eeeeee;
+
+    color: #333;
+
+}
+
+
+.status-pending {
+
+    background: #f5f5f5;
+
+    color: #777;
+
+}
+
+
+.status-cancelled {
+
+    background: #eeeeee;
+
+    color: #999;
+
+}
+
+
+.empty-orders {
+
+    background: white;
+
+    border-radius: 16px;
+
+    padding: 60px 20px;
+
+    text-align: center;
+
+}
+
+
+.empty-orders-icon {
+
+    font-size: 50px;
+
+}
+
+
+.empty-orders-title {
+
+    margin-top: 15px;
+
+    font-size: 20px;
+
+    font-weight: 700;
+
+}
+
+
+.empty-orders-text {
+
+    margin-top: 8px;
+
+    color: #999;
+
+}
+
+
+.small-button {
+
+    margin-top: 25px;
+
+    width: auto;
+
+    padding-left: 25px;
+
+    padding-right: 25px;
+
+}
+
+
+/* =========================
+   訂單詳情
+========================= */
+
+.detail-title {
+
+    margin-bottom: 20px;
+
+    font-size: 26px;
+
+    font-weight: 700;
+
+}
+
+
+.order-detail-card {
+
+    background: white;
+
+    border-radius: 16px;
+
+    padding: 22px;
+
+    margin-bottom: 18px;
+
+    box-shadow:
+        0 3px 15px
+        rgba(0, 0, 0, 0.04);
+
+}
+
+
+.detail-header {
+
+    display: flex;
+
+    justify-content: space-between;
+
+    align-items: flex-start;
+
+}
+
+
+.detail-order-id {
+
+    font-size: 18px;
+
+    font-weight: 700;
+
+}
+
+
+.detail-date {
+
+    margin-top: 5px;
+
+    color: #999;
+
+    font-size: 13px;
+
+}
+
+
+.detail-item {
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: space-between;
+
+    padding: 17px 0;
+
+    border-bottom:
+        1px solid #eee;
+
+}
+
+
+.detail-item:last-child {
+
+    border-bottom: none;
+
+}
+
+
+.detail-product-name {
+
+    font-size: 16px;
+
+    font-weight: 600;
+
+}
+
+
+.detail-product-info {
+
+    margin-top: 5px;
+
+    color: #999;
+
+    font-size: 13px;
+
+}
+
+
+.detail-total {
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: space-between;
+
+    padding-top: 18px;
+
+    font-size: 18px;
+
+}
+
+
+.detail-total strong {
+
+    font-size: 22px;
+
+}
+
+
+/* 手機版 */
+
+@media (max-width: 600px) {
+
+    .order-card {
+
+        padding: 17px;
+
+    }
+
+
+    .order-card-top {
+
+        gap: 8px;
+
+    }
+
+
+    .detail-header {
+
+        gap: 10px;
+
+    }
+
+
+    .detail-order-id {
+
+        font-size: 16px;
+
+    }
+
+}
