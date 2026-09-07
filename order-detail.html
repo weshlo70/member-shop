@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>訂單詳情</title>
+
+    <link
+        rel="stylesheet"
+        href="style.css"
+    >
+
+</head>
+
+
+<body>
+
+
+<div class="app">
+
+
+    <header class="header">
+
+        <button
+            class="back-button"
+            onclick="goBack()"
+        >
+            ←
+        </button>
+
+
+        <div class="header-title">
+            訂單詳情
+        </div>
+
+
+        <div></div>
+
+    </header>
+
+
+    <main class="container">
+
+
+        <div
+            id="orderDetail"
+        >
+
+            <div class="product-loading">
+                訂單載入中...
+            </div>
+
+        </div>
+
+
+    </main>
+
+
+    <div
+        id="loading"
+        class="loading hidden"
+    >
+
+        <div class="loading-box">
+
+            <div class="spinner"></div>
+
+            <div>
+                處理中...
+            </div>
+
+        </div>
+
+    </div>
+
+
+</div>
+
+
+<script src="order-detail.js"></script>
+
+</body>
+
+</html>
