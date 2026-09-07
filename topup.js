@@ -529,13 +529,9 @@ async function submitTopup() {
         // 成功
         // ========================================
 
-        alert(
-            "儲值申請已送出！\n\n" +
-            "申請編號：" +
-            data.request.requestId +
-            "\n\n" +
-            "目前狀態：等待確認"
-        );
+        showSuccessModal(
+         data.request.requestId
+         );
 
 
         // 清空表單
@@ -697,5 +693,76 @@ function setLoading(show) {
         );
 
     }
+
+}
+// ========================================
+// 成功視窗
+// ========================================
+
+function showSuccessModal(requestId) {
+
+    const modal =
+        document.createElement("div");
+
+    modal.className =
+        "topup-success-modal";
+
+    modal.innerHTML = `
+
+        <div class="topup-success-box">
+
+            <div class="topup-success-icon">
+                ✓
+            </div>
+
+            <div class="topup-success-title">
+                儲值申請已送出
+            </div>
+
+            <div class="topup-success-text">
+
+                <div class="success-label">
+                    申請編號
+                </div>
+
+                <div class="success-request-id">
+                    ${escapeHtml(requestId)}
+                </div>
+
+
+                <div class="success-label success-status-label">
+                    目前狀態
+                </div>
+
+                <div class="success-status">
+                    ⏳ 等待確認
+                </div>
+
+            </div>
+
+            <button
+                class="primary-button"
+                id="successModalButton"
+            >
+                確定
+            </button>
+
+        </div>
+
+    `;
+
+    document.body.appendChild(modal);
+
+
+    document
+        .getElementById("successModalButton")
+        .addEventListener(
+            "click",
+            function () {
+
+                modal.remove();
+
+            }
+        );
 
 }
