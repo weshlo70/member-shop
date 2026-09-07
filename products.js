@@ -720,22 +720,8 @@ function goCheckout() {
     }
 
 
-    /*
-     * 下一版會在這裡進入
-     *
-     * 確認訂單
-     * ↓
-     * 檢查餘額
-     * ↓
-     * 建立訂單
-     * ↓
-     * 扣款
-     *
-     */
-
-    alert(
-        "下一版將進入訂單確認"
-    );
+    window.location.href =
+        "checkout.html";
 
 }
 
