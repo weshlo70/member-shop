@@ -262,12 +262,12 @@ function renderTopupRequests(requests) {
 
                             <div>
                                 匯款日期：
-                                ${escapeHtml(request.transferDate)}
+                                ${escapeHtml(formatTransferDate(request.transferDate))}
                             </div>
 
                             <div>
                                 匯款時間：
-                                ${escapeHtml(request.transferTime)}
+                                ${escapeHtml(formatTransferTime(request.transferTime))}
                             </div>
 
                             <div>
@@ -764,5 +764,93 @@ function showSuccessModal(requestId) {
 
             }
         );
+
+}
+// ========================================
+// 匯款日期格式
+// ========================================
+
+function formatTransferDate(value) {
+
+    if (!value) {
+        return "--";
+    }
+
+    const date =
+        new Date(value);
+
+    if (
+        !isNaN(date.getTime())
+    ) {
+
+        return (
+            date.getFullYear() +
+            "/" +
+            String(
+                date.getMonth() + 1
+            ).padStart(2, "0") +
+            "/" +
+            String(
+                date.getDate()
+            ).padStart(2, "0")
+        );
+
+    }
+
+    return String(value);
+
+}
+
+
+// ========================================
+// 匯款時間格式
+// ========================================
+
+function formatTransferTime(value) {
+
+    if (!value) {
+        return "--";
+    }
+
+    const date =
+        new Date(value);
+
+    // Google Sheets 時間欄位
+    if (
+        !isNaN(date.getTime()) &&
+        date.getFullYear() <= 1900
+    ) {
+
+        return (
+            String(
+                date.getHours()
+            ).padStart(2, "0") +
+            ":" +
+            String(
+                date.getMinutes()
+            ).padStart(2, "0")
+        );
+
+    }
+
+    // 已經是 HH:mm
+    const match =
+        String(value).match(
+            /^(\d{1,2}):(\d{2})/
+        );
+
+    if (match) {
+
+        return (
+            String(
+                match[1]
+            ).padStart(2, "0") +
+            ":" +
+            match[2]
+        );
+
+    }
+
+    return String(value);
 
 }
