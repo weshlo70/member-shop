@@ -1549,3 +1549,90 @@ button {
     }
 
 }
+
+/* =========================
+   會員資料
+   ========================= */
+
+.member-detail-card {
+
+    background: white;
+
+    border-radius: 16px;
+
+    padding: 22px;
+
+    margin-bottom: 18px;
+
+    box-shadow:
+        0 3px 15px
+        rgba(0, 0, 0, 0.05);
+
+}
+
+
+.member-info-row {
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: space-between;
+
+    gap: 20px;
+
+    padding: 15px 0;
+
+    border-bottom:
+        1px solid #eee;
+
+}
+
+
+.member-info-row:last-child {
+
+    border-bottom: none;
+
+}
+
+
+.member-info-row span {
+
+    color: #888;
+
+    font-size: 14px;
+
+}
+
+
+.member-info-row strong {
+
+    text-align: right;
+
+    word-break: break-word;
+
+}
+
+
+.member-back-home {
+
+    margin-top: 5px;
+
+}
+
+
+@media (max-width: 600px) {
+
+    .member-info-row {
+
+        align-items: flex-start;
+
+    }
+
+    .member-info-row strong {
+
+        max-width: 65%;
+
+    }
+
+}
