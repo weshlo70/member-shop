@@ -8,7 +8,7 @@
 // ========================================
 
 const ORDERS_API_URL =
-    "你的 Apps Script 網址";
+    "https://script.google.com/macros/s/AKfycbzoiQXbZQt12Ez_2yz2aQo4guCJwrmggYgGZr2XhB1N0xXXXH7qLUmp4-9xzDhMCvtN/exec";
 
 
 // ========================================
