@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+
+<head>
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>會員資料</title>
+
+    <link
+        rel="stylesheet"
+        href="style.css"
+    >
+</head>
+
+<body>
+
+<div class="app">
+
+    <!-- Header -->
+    <header class="header">
+
+        <div class="header-title">
+            會員資料
+        </div>
+
+        <button
+            class="back-button"
+            onclick="history.back()"
+        >
+            ←
+        </button>
+
+    </header>
+
+
+    <main class="container">
+
+        <!-- 標題 -->
+        <div class="shop-title">
+
+            <div class="shop-main-title">
+                我的資料
+            </div>
+
+            <div class="shop-subtitle">
+                查看您的會員資訊
+            </div>
+
+        </div>
+
+
+        <!-- 會員基本資料 -->
+        <div class="member-detail-card">
+
+            <div class="card-title">
+                基本資料
+            </div>
+
+
+            <div class="member-info-row">
+                <span>會員編號</span>
+                <strong id="memberId">--</strong>
+            </div>
+
+
+            <div class="member-info-row">
+                <span>姓名</span>
+                <strong id="memberName">--</strong>
+            </div>
+
+
+            <div class="member-info-row">
+                <span>電話</span>
+                <strong id="memberPhone">--</strong>
+            </div>
+
+
+            <div class="member-info-row">
+                <span>Email</span>
+                <strong id="memberEmail">--</strong>
+            </div>
+
+        </div>
+
+
+        <!-- 帳戶資料 -->
+        <div class="member-detail-card">
+
+            <div class="card-title">
+                帳戶資料
+            </div>
+
+
+            <div class="member-info-row">
+                <span>目前餘額</span>
+                <strong id="memberBalance">--</strong>
+            </div>
+
+
+            <div class="member-info-row">
+                <span>會員狀態</span>
+                <strong id="memberStatus">--</strong>
+            </div>
+
+        </div>
+
+
+        <!-- 會員日期 -->
+        <div class="member-detail-card">
+
+            <div class="card-title">
+                會員資訊
+            </div>
+
+
+            <div class="member-info-row">
+                <span>加入日期</span>
+                <strong id="memberCreatedAt">--</strong>
+            </div>
+
+
+            <div class="member-info-row">
+                <span>最後登入</span>
+                <strong id="memberLastLogin">--</strong>
+            </div>
+
+        </div>
+
+
+        <button
+            class="primary-button member-back-home"
+            onclick="window.location.href='index.html'"
+        >
+            回到會員首頁
+        </button>
+
+    </main>
+
+
+    <!-- Loading -->
+    <div
+        id="loading"
+        class="loading hidden"
+    >
+
+        <div class="loading-box">
+
+            <div class="spinner"></div>
+
+            <div>
+                讀取會員資料...
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+<script src="member.js"></script>
+
+</body>
+
+</html>
