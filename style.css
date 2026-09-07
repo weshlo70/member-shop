@@ -1636,3 +1636,130 @@ button {
     }
 
 }
+/* =========================
+   儲值
+   ========================= */
+
+.topup-description {
+    color: #666;
+    font-size: 14px;
+    line-height: 1.7;
+}
+
+.topup-description p {
+    margin: 0 0 10px;
+}
+
+.topup-notice {
+    margin-top: 15px;
+    padding: 12px 15px;
+    background: #f5f5f5;
+    border-radius: 10px;
+    color: #666;
+    font-size: 13px;
+}
+
+
+.topup-list {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+
+.topup-item {
+    padding: 17px;
+    border: 1px solid #eee;
+    border-radius: 12px;
+}
+
+
+.topup-item-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 15px;
+}
+
+
+.topup-request-id {
+    font-weight: 700;
+    font-size: 15px;
+}
+
+
+.topup-date {
+    margin-top: 5px;
+    color: #999;
+    font-size: 12px;
+}
+
+
+.topup-amount {
+    font-size: 20px;
+    font-weight: 700;
+}
+
+
+.topup-item-info {
+    margin-top: 15px;
+    padding-top: 12px;
+    border-top: 1px solid #eee;
+    color: #777;
+    font-size: 13px;
+    line-height: 1.8;
+}
+
+
+.topup-item-bottom {
+    margin-top: 13px;
+}
+
+
+.topup-status {
+    display: inline-block;
+    padding: 5px 11px;
+    border-radius: 20px;
+    background: #f3f3f3;
+    color: #555;
+    font-size: 12px;
+}
+
+
+.topup-status.pending {
+    background: #f5f5f5;
+    color: #666;
+}
+
+
+.topup-status.approved {
+    background: #eeeeee;
+    color: #222;
+}
+
+
+.topup-status.rejected {
+    background: #eeeeee;
+    color: #999;
+}
+
+
+.topup-empty,
+.topup-loading {
+    text-align: center;
+    padding: 30px 10px;
+    color: #999;
+}
+
+
+@media (max-width: 600px) {
+
+    .topup-item-top {
+        gap: 10px;
+    }
+
+    .topup-amount {
+        font-size: 18px;
+    }
+
+}
