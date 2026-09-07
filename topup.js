@@ -1,0 +1,701 @@
+// ========================================
+// Apps Script API 網址
+// ========================================
+
+const API_URL =
+    "https://script.google.com/macros/s/AKfycbzoiQXbZQt12Ez_2yz2aQo4guCJwrmggYgGZr2XhB1N0xXXXH7qLUmp4-9xzDhMCvtN/exec";
+
+
+// ========================================
+// 啟動
+// ========================================
+
+document.addEventListener(
+    "DOMContentLoaded",
+    function () {
+
+        const token =
+            localStorage.getItem("memberToken");
+
+
+        if (!token) {
+
+            window.location.href =
+                "index.html";
+
+            return;
+
+        }
+
+
+        // 預設今天日期
+        setDefaultDate();
+
+
+        loadMember(token);
+
+        loadTopupRequests(token);
+
+
+        document
+            .getElementById("submitTopupButton")
+            .addEventListener(
+                "click",
+                submitTopup
+            );
+
+    }
+);
+
+
+// ========================================
+// 預設日期 / 時間
+// ========================================
+
+function setDefaultDate() {
+
+    const now =
+        new Date();
+
+
+    const year =
+        now.getFullYear();
+
+
+    const month =
+        String(
+            now.getMonth() + 1
+        ).padStart(2, "0");
+
+
+    const day =
+        String(
+            now.getDate()
+        ).padStart(2, "0");
+
+
+    document.getElementById(
+        "transferDate"
+    ).value =
+        `${year}-${month}-${day}`;
+
+
+    const hours =
+        String(
+            now.getHours()
+        ).padStart(2, "0");
+
+
+    const minutes =
+        String(
+            now.getMinutes()
+        ).padStart(2, "0");
+
+
+    document.getElementById(
+        "transferTime"
+    ).value =
+        `${hours}:${minutes}`;
+
+}
+
+
+// ========================================
+// 取得會員資料
+// ========================================
+
+async function loadMember(token) {
+
+    try {
+
+        const response =
+            await fetch(
+                API_URL +
+                "?action=member&token=" +
+                encodeURIComponent(token)
+            );
+
+
+        const data =
+            await response.json();
+
+
+        if (!data.success) {
+
+            localStorage.removeItem(
+                "memberToken"
+            );
+
+            window.location.href =
+                "index.html";
+
+            return;
+
+        }
+
+
+        document.getElementById(
+            "memberBalance"
+        ).textContent =
+            formatMoney(
+                data.member.balance
+            );
+
+    }
+    catch (error) {
+
+        console.error(error);
+
+    }
+
+}
+
+
+// ========================================
+// 取得儲值紀錄
+// ========================================
+
+async function loadTopupRequests(token) {
+
+    const list =
+        document.getElementById(
+            "topupList"
+        );
+
+
+    try {
+
+        const response =
+            await fetch(
+                API_URL +
+                "?action=topupRequests&token=" +
+                encodeURIComponent(token)
+            );
+
+
+        const data =
+            await response.json();
+
+
+        if (!data.success) {
+
+            list.innerHTML =
+                `<div class="topup-empty">
+                    無法取得儲值紀錄
+                </div>`;
+
+            return;
+
+        }
+
+
+        renderTopupRequests(
+            data.requests || []
+        );
+
+    }
+    catch (error) {
+
+        console.error(error);
+
+        list.innerHTML =
+            `<div class="topup-empty">
+                無法取得儲值紀錄，請稍後再試
+            </div>`;
+
+    }
+
+}
+
+
+// ========================================
+// 顯示儲值紀錄
+// ========================================
+
+function renderTopupRequests(requests) {
+
+    const list =
+        document.getElementById(
+            "topupList"
+        );
+
+
+    if (!requests.length) {
+
+        list.innerHTML =
+            `<div class="topup-empty">
+                目前沒有儲值申請紀錄
+            </div>`;
+
+        return;
+
+    }
+
+
+    list.innerHTML =
+        requests.map(
+            function (request) {
+
+                return `
+                    <div class="topup-item">
+
+                        <div class="topup-item-top">
+
+                            <div>
+                                <div class="topup-request-id">
+                                    ${escapeHtml(request.requestId)}
+                                </div>
+
+                                <div class="topup-date">
+                                    ${escapeHtml(request.createdAt)}
+                                </div>
+                            </div>
+
+                            <div class="topup-amount">
+                                ${formatMoney(request.amount)}
+                            </div>
+
+                        </div>
+
+
+                        <div class="topup-item-info">
+
+                            <div>
+                                匯款日期：
+                                ${escapeHtml(request.transferDate)}
+                            </div>
+
+                            <div>
+                                匯款時間：
+                                ${escapeHtml(request.transferTime)}
+                            </div>
+
+                            <div>
+                                匯款銀行：
+                                ${escapeHtml(request.bank)}
+                            </div>
+
+                            <div>
+                                帳號後五碼：
+                                ${escapeHtml(request.accountLast5)}
+                            </div>
+
+                        </div>
+
+
+                        <div class="topup-item-bottom">
+
+                            <span class="${getStatusClass(request.status)}">
+                                ${getStatusText(request.status)}
+                            </span>
+
+                        </div>
+
+                    </div>
+                `;
+
+            }
+        ).join("");
+
+}
+
+
+// ========================================
+// 送出儲值申請
+// ========================================
+
+async function submitTopup() {
+
+    const token =
+        localStorage.getItem(
+            "memberToken"
+        );
+
+
+    if (!token) {
+
+        window.location.href =
+            "index.html";
+
+        return;
+
+    }
+
+
+    const amount =
+        document.getElementById(
+            "amount"
+        ).value.trim();
+
+
+    const transferDate =
+        document.getElementById(
+            "transferDate"
+        ).value;
+
+
+    const transferTime =
+        document.getElementById(
+            "transferTime"
+        ).value;
+
+
+    const bank =
+        document.getElementById(
+            "bank"
+        ).value.trim();
+
+
+    const accountLast5 =
+        document.getElementById(
+            "accountLast5"
+        ).value.trim();
+
+
+    const note =
+        document.getElementById(
+            "note"
+        ).value.trim();
+
+
+    const message =
+        document.getElementById(
+            "topupMessage"
+        );
+
+
+    message.textContent = "";
+
+
+    // ========================================
+    // 前端基本驗證
+    // ========================================
+
+    if (
+        !amount ||
+        Number(amount) <= 0 ||
+        !Number.isInteger(
+            Number(amount)
+        )
+    ) {
+
+        message.textContent =
+            "請輸入正確的匯款金額";
+
+        return;
+
+    }
+
+
+    if (!transferDate) {
+
+        message.textContent =
+            "請選擇匯款日期";
+
+        return;
+
+    }
+
+
+    if (!transferTime) {
+
+        message.textContent =
+            "請選擇匯款時間";
+
+        return;
+
+    }
+
+
+    if (!bank) {
+
+        message.textContent =
+            "請輸入匯款銀行";
+
+        return;
+
+    }
+
+
+    if (!/^\d{5}$/.test(accountLast5)) {
+
+        message.textContent =
+            "請輸入5位數字的匯款帳號後五碼";
+
+        return;
+
+    }
+
+
+    // ========================================
+    // 確認送出
+    // ========================================
+
+    const confirmed =
+        confirm(
+            "確定要送出這筆儲值申請嗎？\n\n" +
+            "匯款金額：$" +
+            Number(amount)
+                .toLocaleString("zh-TW") +
+            "\n" +
+            "匯款銀行：" +
+            bank +
+            "\n" +
+            "帳號後五碼：" +
+            accountLast5
+        );
+
+
+    if (!confirmed) {
+        return;
+    }
+
+
+    setLoading(true);
+
+
+    const button =
+        document.getElementById(
+            "submitTopupButton"
+        );
+
+
+    button.disabled = true;
+
+
+    try {
+
+        const response =
+            await fetch(
+                API_URL,
+                {
+
+                    method: "POST",
+
+                    headers: {
+                        "Content-Type":
+                            "text/plain;charset=utf-8"
+                    },
+
+                    body:
+                        JSON.stringify({
+
+                            action:
+                                "createTopupRequest",
+
+                            token:
+                                token,
+
+                            amount:
+                                Number(amount),
+
+                            transferDate:
+                                transferDate,
+
+                            transferTime:
+                                transferTime,
+
+                            bank:
+                                bank,
+
+                            accountLast5:
+                                accountLast5,
+
+                            note:
+                                note
+
+                        })
+
+                }
+            );
+
+
+        const data =
+            await response.json();
+
+
+        if (!data.success) {
+
+            message.textContent =
+                data.message ||
+                "儲值申請失敗";
+
+            return;
+
+        }
+
+
+        // ========================================
+        // 成功
+        // ========================================
+
+        alert(
+            "儲值申請已送出！\n\n" +
+            "申請編號：" +
+            data.request.requestId +
+            "\n\n" +
+            "目前狀態：等待確認"
+        );
+
+
+        // 清空表單
+        document.getElementById(
+            "amount"
+        ).value = "";
+
+
+        document.getElementById(
+            "bank"
+        ).value = "";
+
+
+        document.getElementById(
+            "accountLast5"
+        ).value = "";
+
+
+        document.getElementById(
+            "note"
+        ).value = "";
+
+
+        message.textContent =
+            "儲值申請已送出，等待確認";
+
+
+        // 重新載入紀錄
+        loadTopupRequests(token);
+
+    }
+    catch (error) {
+
+        console.error(error);
+
+        message.textContent =
+            "無法連線到會員系統，請稍後再試";
+
+    }
+    finally {
+
+        setLoading(false);
+
+        button.disabled = false;
+
+    }
+
+}
+
+
+// ========================================
+// 狀態文字
+// ========================================
+
+function getStatusText(status) {
+
+    switch (
+        String(status)
+            .toLowerCase()
+    ) {
+
+        case "pending":
+            return "⏳ 等待確認";
+
+        case "approved":
+            return "✓ 已入帳";
+
+        case "rejected":
+            return "✕ 已拒絕";
+
+        default:
+            return status || "未知";
+
+    }
+
+}
+
+
+// ========================================
+// 狀態 CSS
+// ========================================
+
+function getStatusClass(status) {
+
+    switch (
+        String(status)
+            .toLowerCase()
+    ) {
+
+        case "pending":
+            return "topup-status pending";
+
+        case "approved":
+            return "topup-status approved";
+
+        case "rejected":
+            return "topup-status rejected";
+
+        default:
+            return "topup-status";
+
+    }
+
+}
+
+
+// ========================================
+// HTML 安全處理
+// ========================================
+
+function escapeHtml(value) {
+
+    return String(value || "")
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#039;");
+
+}
+
+
+// ========================================
+// 金額格式
+// ========================================
+
+function formatMoney(amount) {
+
+    return "$" +
+        Number(amount || 0)
+            .toLocaleString("zh-TW");
+
+}
+
+
+// ========================================
+// Loading
+// ========================================
+
+function setLoading(show) {
+
+    const loading =
+        document.getElementById(
+            "loading"
+        );
+
+
+    if (show) {
+
+        loading.classList.remove(
+            "hidden"
+        );
+
+    }
+    else {
+
+        loading.classList.add(
+            "hidden"
+        );
+
+    }
+
+}
