@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>確認訂單</title>
+
+    <link
+        rel="stylesheet"
+        href="style.css"
+    >
+
+</head>
+
+
+<body>
+
+
+<div class="app">
+
+
+    <header class="header">
+
+        <button
+            class="back-button"
+            onclick="history.back()"
+        >
+            ←
+        </button>
+
+        <div class="header-title">
+            確認訂單
+        </div>
+
+        <div></div>
+
+    </header>
+
+
+    <main class="container">
+
+
+        <div class="shop-main-title">
+            確認訂單
+        </div>
+
+
+        <div
+            id="checkoutItems"
+            class="checkout-card"
+        >
+        </div>
+
+
+        <div class="checkout-card">
+
+            <div class="card-title">
+                帳戶資訊
+            </div>
+
+
+            <div class="info-row">
+
+                <span>
+                    目前餘額
+                </span>
+
+                <strong
+                    id="currentBalance"
+                >
+                    $0
+                </strong>
+
+            </div>
+
+
+            <div class="info-row">
+
+                <span>
+                    訂單金額
+                </span>
+
+                <strong
+                    id="orderTotal"
+                >
+                    $0
+                </strong>
+
+            </div>
+
+
+            <div class="info-row">
+
+                <span>
+                    付款後餘額
+                </span>
+
+                <strong
+                    id="balanceAfter"
+                >
+                    $0
+                </strong>
+
+            </div>
+
+        </div>
+
+
+        <div
+            id="checkoutMessage"
+            class="checkout-message"
+        >
+        </div>
+
+
+        <button
+            id="confirmOrderButton"
+            class="primary-button"
+        >
+            確認付款並下單
+        </button>
+
+
+    </main>
+
+
+    <div
+        id="loading"
+        class="loading hidden"
+    >
+
+        <div class="loading-box">
+
+            <div class="spinner"></div>
+
+            <div>
+                處理中...
+            </div>
+
+        </div>
+
+    </div>
+
+
+</div>
+
+
+<script src="app.js"></script>
+
+<script src="checkout.js"></script>
+
+
+</body>
+
+</html>
