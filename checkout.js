@@ -1,10 +1,17 @@
 // ========================================
-// 確認訂單
+// 結帳頁
 // ========================================
 
 let checkoutProducts = [];
-
 let checkoutTotal = 0;
+
+
+// ========================================
+// Apps Script API
+// ========================================
+
+const CHECKOUT_API_URL =
+    "你的 Apps Script 網址";
 
 
 // ========================================
@@ -13,32 +20,16 @@ let checkoutTotal = 0;
 
 document.addEventListener(
     "DOMContentLoaded",
-    async function () {
+    function () {
 
-        const token =
-            localStorage.getItem(
-                "memberToken"
-            );
-
-
-        if (!token) {
-
-            window.location.href =
-                "index.html";
-
-            return;
-
-        }
-
-
-        await loadCheckout();
+        loadCheckout();
 
     }
 );
 
 
 // ========================================
-// 載入確認訂單
+// 載入結帳資料
 // ========================================
 
 async function loadCheckout() {
@@ -49,6 +40,21 @@ async function loadCheckout() {
         );
 
 
+    // 沒有登入 Token
+    if (!token) {
+
+        alert(
+            "登入資訊已失效，請重新登入"
+        );
+
+        window.location.href =
+            "index.html";
+
+        return;
+
+    }
+
+
     const cart =
         JSON.parse(
             localStorage.getItem(
@@ -57,6 +63,7 @@ async function loadCheckout() {
         );
 
 
+    // 購物車是空的
     if (
         Object.keys(cart).length === 0
     ) {
@@ -78,41 +85,35 @@ async function loadCheckout() {
 
     try {
 
-        // 同時取得會員與商品
+        // ====================================
+        // 取得會員資料
+        // ====================================
 
-        const [
-            memberResponse,
-            productResponse
-        ] = await Promise.all([
+        const memberResponse =
+            await fetch(
 
-            fetch(
-                API_URL +
+                CHECKOUT_API_URL +
                 "?action=member&token=" +
                 encodeURIComponent(token)
-            ),
 
-            fetch(
-                API_URL +
-                "?action=products&token=" +
-                encodeURIComponent(token)
-            )
-
-        ]);
+            );
 
 
         const memberData =
             await memberResponse.json();
 
-        const productData =
-            await productResponse.json();
 
-
+        // Token 無效
         if (
             !memberData.success
         ) {
 
             localStorage.removeItem(
                 "memberToken"
+            );
+
+            alert(
+                "登入已失效，請重新登入"
             );
 
             window.location.href =
@@ -123,13 +124,31 @@ async function loadCheckout() {
         }
 
 
+        // ====================================
+        // 取得商品
+        // ====================================
+
+        const productResponse =
+            await fetch(
+
+                CHECKOUT_API_URL +
+                "?action=products&token=" +
+                encodeURIComponent(token)
+
+            );
+
+
+        const productData =
+            await productResponse.json();
+
+
         if (
             !productData.success
         ) {
 
             alert(
                 productData.message ||
-                "商品讀取失敗"
+                "商品資料讀取失敗"
             );
 
             return;
@@ -138,44 +157,96 @@ async function loadCheckout() {
 
 
         const products =
-            productData.products;
+            productData.products || [];
 
 
-        checkoutProducts =
-            Object.entries(cart)
-                .map(
-                    ([productId, quantity]) => {
+        // ====================================
+        // 整理購物車
+        // ====================================
 
-                        const product =
-                            products.find(
-                                p =>
-                                    p.productId ===
-                                    productId
-                            );
+        checkoutProducts = [];
 
 
-                        if (!product) {
-                            return null;
-                        }
+        Object.entries(cart)
+            .forEach(
+                ([productId, quantity]) => {
+
+                    const product =
+                        products.find(
+                            p =>
+                                p.productId ===
+                                productId
+                        );
 
 
-                        return {
-
-                            ...product,
-
-                            quantity:
-                                Number(quantity),
-
-                            subtotal:
-                                product.price *
-                                Number(quantity)
-
-                        };
-
+                    if (!product) {
+                        return;
                     }
-                )
-                .filter(Boolean);
 
+
+                    const qty =
+                        Number(quantity);
+
+
+                    if (
+                        !Number.isInteger(qty) ||
+                        qty <= 0
+                    ) {
+                        return;
+                    }
+
+
+                    checkoutProducts.push({
+
+                        productId:
+                            product.productId,
+
+                        name:
+                            product.name,
+
+                        price:
+                            Number(
+                                product.price
+                            ),
+
+                        stock:
+                            Number(
+                                product.stock
+                            ),
+
+                        quantity:
+                            qty,
+
+                        subtotal:
+                            Number(
+                                product.price
+                            ) * qty
+
+                    });
+
+                }
+            );
+
+
+        if (
+            checkoutProducts.length === 0
+        ) {
+
+            alert(
+                "購物車內沒有有效商品"
+            );
+
+            window.location.href =
+                "products.html";
+
+            return;
+
+        }
+
+
+        // ====================================
+        // 計算總額
+        // ====================================
 
         checkoutTotal =
             checkoutProducts.reduce(
@@ -183,14 +254,21 @@ async function loadCheckout() {
                 (
                     total,
                     item
-                ) =>
-                    total +
-                    item.subtotal,
+                ) => {
+
+                    return total +
+                        item.subtotal;
+
+                },
 
                 0
 
             );
 
+
+        // ====================================
+        // 顯示畫面
+        // ====================================
 
         renderCheckout(
             memberData.member
@@ -199,12 +277,16 @@ async function loadCheckout() {
     }
     catch (error) {
 
-        console.error(error);
+        console.error(
+            "Checkout Error:",
+            error
+        );
+
 
         document.getElementById(
             "checkoutMessage"
         ).textContent =
-            "無法載入訂單資料";
+            "無法連線到會員系統，請稍後再試";
 
     }
     finally {
@@ -217,7 +299,7 @@ async function loadCheckout() {
 
 
 // ========================================
-// 顯示
+// 顯示訂單
 // ========================================
 
 function renderCheckout(member) {
@@ -230,42 +312,46 @@ function renderCheckout(member) {
 
     container.innerHTML =
         checkoutProducts
-            .map(item => `
+            .map(
+                item => `
 
-                <div class="checkout-item">
+                    <div
+                        class="checkout-item"
+                    >
 
-                    <div>
+                        <div>
 
-                        <div
-                            class="checkout-product-name"
-                        >
-                            ${escapeHtml(
-                                item.name
-                            )}
+                            <div
+                                class="checkout-product-name"
+                            >
+                                ${escapeHtml(
+                                    item.name
+                                )}
+                            </div>
+
+                            <div
+                                class="checkout-product-detail"
+                            >
+                                ${formatMoney(
+                                    item.price
+                                )}
+                                ×
+                                ${item.quantity}
+                            </div>
+
                         </div>
 
-                        <div
-                            class="checkout-product-detail"
-                        >
+
+                        <strong>
                             ${formatMoney(
-                                item.price
+                                item.subtotal
                             )}
-                            ×
-                            ${item.quantity}
-                        </div>
+                        </strong>
 
                     </div>
 
-
-                    <strong>
-                        ${formatMoney(
-                            item.subtotal
-                        )}
-                    </strong>
-
-                </div>
-
-            `)
+                `
+            )
             .join("");
 
 
@@ -285,33 +371,40 @@ function renderCheckout(member) {
         );
 
 
+    const balanceAfter =
+        Number(member.balance) -
+        checkoutTotal;
+
+
     document.getElementById(
         "balanceAfter"
     ).textContent =
         formatMoney(
-            member.balance -
-            checkoutTotal
+            balanceAfter
         );
 
 
+    // ====================================
     // 餘額不足
+    // ====================================
 
     if (
-        member.balance <
+        Number(member.balance) <
         checkoutTotal
     ) {
 
         const shortage =
             checkoutTotal -
-            member.balance;
+            Number(member.balance);
 
 
         document.getElementById(
             "checkoutMessage"
         ).textContent =
             "餘額不足，還需要 " +
-            formatMoney(shortage) +
-            "。";
+            formatMoney(
+                shortage
+            );
 
 
         document.getElementById(
@@ -333,17 +426,31 @@ document.getElementById(
 
     "click",
 
-    createOrder
+    submitOrder
 
 );
 
 
-async function createOrder() {
+async function submitOrder() {
 
     const token =
         localStorage.getItem(
             "memberToken"
         );
+
+
+    if (!token) {
+
+        alert(
+            "登入已失效，請重新登入"
+        );
+
+        window.location.href =
+            "index.html";
+
+        return;
+
+    }
 
 
     const cart =
@@ -396,7 +503,7 @@ async function createOrder() {
 
         const response =
             await fetch(
-                API_URL,
+                CHECKOUT_API_URL,
                 {
 
                     method: "POST",
@@ -430,6 +537,10 @@ async function createOrder() {
             await response.json();
 
 
+        // ====================================
+        // 下單失敗
+        // ====================================
+
         if (!data.success) {
 
             document.getElementById(
@@ -439,8 +550,6 @@ async function createOrder() {
                 "下單失敗";
 
 
-            // 餘額不足
-
             if (
                 data.code ===
                 "INSUFFICIENT_BALANCE"
@@ -449,12 +558,10 @@ async function createOrder() {
                 document.getElementById(
                     "checkoutMessage"
                 ).textContent =
-                    data.message +
-                    "，還需要 " +
+                    "儲值餘額不足，還需要 " +
                     formatMoney(
                         data.shortage
-                    ) +
-                    "。";
+                    );
 
             }
 
@@ -535,7 +642,7 @@ async function createOrder() {
             "none";
 
 
-        // 3秒回商城
+        // 3 秒後回首頁
 
         setTimeout(
             function () {
@@ -551,12 +658,16 @@ async function createOrder() {
     }
     catch (error) {
 
-        console.error(error);
+        console.error(
+            "Create Order Error:",
+            error
+        );
+
 
         document.getElementById(
             "checkoutMessage"
         ).textContent =
-            "連線錯誤，請稍後再試";
+            "系統連線錯誤，訂單尚未建立";
 
 
         button.disabled = false;
@@ -572,7 +683,7 @@ async function createOrder() {
 
 
 // ========================================
-// 工具
+// 金額
 // ========================================
 
 function formatMoney(amount) {
@@ -586,25 +697,34 @@ function formatMoney(amount) {
 }
 
 
+// ========================================
+// 防止 HTML 注入
+// ========================================
+
 function escapeHtml(value) {
 
     return String(value || "")
+
         .replace(
             /&/g,
             "&amp;"
         )
+
         .replace(
             /</g,
             "&lt;"
         )
+
         .replace(
             />/g,
             "&gt;"
         )
+
         .replace(
             /"/g,
             "&quot;"
         )
+
         .replace(
             /'/g,
             "&#039;"
@@ -612,6 +732,10 @@ function escapeHtml(value) {
 
 }
 
+
+// ========================================
+// Loading
+// ========================================
 
 function setLoading(show) {
 
