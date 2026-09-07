@@ -407,3 +407,9 @@ function setLoading(show) {
     }
 
 }
+function openProducts() {
+
+    window.location.href =
+        "products.html";
+
+}
