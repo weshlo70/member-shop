@@ -544,48 +544,97 @@ button {
    商品商城
 ========================= */
 
-.back-button,
-.cart-button {
+.back-button {
     background: none;
     border: none;
     font-size: 22px;
 }
-
 
 .back-button {
     margin-right: 10px;
 }
 
 
-.cart-button {
-    position: relative;
+/* =========================
+   懸浮購物車
+========================= */
+
+.floating-cart-button {
+    position: fixed;
+    right: 24px;
+    bottom: calc(24px + env(safe-area-inset-bottom));
+
+    width: 60px;
+    height: 60px;
+
+    border: none;
+    border-radius: 50%;
+
+    background: #222;
+    color: white;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    font-size: 28px;
+    cursor: pointer;
+
+    z-index: 900;
+
+    box-shadow:
+        0 8px 24px
+        rgba(0, 0, 0, 0.22);
+
+    transition:
+        transform 0.15s ease,
+        box-shadow 0.15s ease;
 }
 
+.floating-cart-button:hover {
+    transform: translateY(-2px);
+
+    box-shadow:
+        0 10px 28px
+        rgba(0, 0, 0, 0.26);
+}
+
+.floating-cart-button:active {
+    transform: scale(0.95);
+}
+
+.floating-cart-icon {
+    line-height: 1;
+}
 
 .cart-count {
     position: absolute;
 
-    top: -6px;
-    right: -8px;
+    top: -4px;
+    right: -4px;
 
-    min-width: 18px;
-    height: 18px;
+    min-width: 22px;
+    height: 22px;
 
-    padding: 0 5px;
+    padding: 0 6px;
 
     border-radius: 20px;
 
-    background: #222;
-
+    background: #e53935;
     color: white;
 
-    font-size: 11px;
+    font-size: 12px;
+    font-weight: 700;
 
     display: flex;
-
     align-items: center;
-
     justify-content: center;
+
+    border: 2px solid white;
+}
+
+.floating-cart-count {
+    pointer-events: none;
 }
 
 
@@ -1015,6 +1064,25 @@ button {
     .product-bottom {
 
         align-items: center;
+
+    }
+
+
+    .floating-cart-button {
+
+        right: 18px;
+
+        bottom:
+            calc(
+                18px +
+                env(safe-area-inset-bottom)
+            );
+
+        width: 58px;
+
+        height: 58px;
+
+        font-size: 27px;
 
     }
 

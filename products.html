@@ -44,23 +44,6 @@
             商品商城
         </div>
 
-
-        <button
-            class="cart-button"
-            onclick="openCart()"
-        >
-
-            🛒
-
-            <span
-                id="cartCount"
-                class="cart-count"
-            >
-                0
-            </span>
-
-        </button>
-
     </header>
 
 
@@ -105,6 +88,28 @@
 
     </main>
 
+
+
+    <!-- =========================
+         懸浮購物車
+    ========================== -->
+
+    <button
+        id="floatingCartButton"
+        class="floating-cart-button"
+        type="button"
+        onclick="openCart()"
+        aria-label="開啟購物車"
+    >
+        <span class="floating-cart-icon">🛒</span>
+
+        <span
+            id="cartCount"
+            class="cart-count floating-cart-count"
+        >
+            0
+        </span>
+    </button>
 
 
     <!-- =========================
