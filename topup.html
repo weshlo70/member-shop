@@ -15,6 +15,47 @@
         rel="stylesheet"
         href="style.css"
     >
+
+    <style>
+        .payment-method-options {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 12px;
+        }
+
+        .payment-method-option {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 14px 16px;
+            border: 1px solid #ddd;
+            border-radius: 12px;
+            cursor: pointer;
+            background: #fff;
+        }
+
+        .payment-method-option input {
+            width: auto;
+            margin: 0;
+        }
+
+        .payment-method-help {
+            margin-top: 12px;
+            color: #666;
+            line-height: 1.7;
+            font-size: 14px;
+        }
+
+        .payment-method-section.hidden {
+            display: none;
+        }
+
+        @media (max-width: 600px) {
+            .payment-method-options {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
 </head>
 
 <body>
@@ -69,13 +110,11 @@
             <div class="topup-description">
 
                 <p>
-                    請先將款項匯入指定帳戶，
-                    再填寫下方匯款資料。
+                    可選擇「銀行匯款」或「傳真刷卡」提出儲值申請。
                 </p>
 
                 <p>
-                    我們確認收到款項後，
-                    才會將金額加入您的會員餘額。
+                    我們確認款項或刷卡資料完成後，才會將金額加入您的會員餘額。
                 </p>
 
                 <div class="topup-notice">
@@ -99,7 +138,7 @@
             <div class="form-group">
 
                 <label for="amount">
-                    匯款金額
+                    儲值金額
                 </label>
 
                 <input
@@ -107,72 +146,174 @@
                     type="number"
                     min="1"
                     step="1"
-                    placeholder="請輸入匯款金額"
+                    placeholder="請輸入儲值金額"
                 >
 
             </div>
 
 
-            <!-- 日期 -->
+            <!-- 儲值方式 -->
             <div class="form-group">
 
-                <label for="transferDate">
-                    匯款日期
+                <label>
+                    儲值方式
                 </label>
 
-                <input
-                    id="transferDate"
-                    type="date"
+                <div class="payment-method-options">
+
+                    <label class="payment-method-option">
+                        <input
+                            type="radio"
+                            name="paymentMethod"
+                            value="BankTransfer"
+                            checked
+                        >
+                        <span>銀行匯款</span>
+                    </label>
+
+                    <label class="payment-method-option">
+                        <input
+                            type="radio"
+                            name="paymentMethod"
+                            value="FaxCard"
+                        >
+                        <span>傳真刷卡</span>
+                    </label>
+
+                </div>
+
+                <div
+                    id="paymentMethodHelp"
+                    class="payment-method-help"
                 >
+                    請先完成匯款，再填寫下方匯款資料。
+                </div>
 
             </div>
 
 
-            <!-- 時間 -->
-            <div class="form-group">
+            <!-- 銀行匯款欄位 -->
+            <div
+                id="bankTransferFields"
+                class="payment-method-section"
+            >
 
-                <label for="transferTime">
-                    匯款時間
-                </label>
+                <div class="form-group">
 
-                <input
-                    id="transferTime"
-                    type="time"
-                >
+                    <label for="transferDate">
+                        匯款日期
+                    </label>
+
+                    <input
+                        id="transferDate"
+                        type="date"
+                    >
+
+                </div>
+
+
+                <div class="form-group">
+
+                    <label for="transferTime">
+                        匯款時間
+                    </label>
+
+                    <input
+                        id="transferTime"
+                        type="time"
+                    >
+
+                </div>
+
+
+                <div class="form-group">
+
+                    <label for="bank">
+                        匯款銀行
+                    </label>
+
+                    <input
+                        id="bank"
+                        type="text"
+                        placeholder="例如：台新銀行"
+                    >
+
+                </div>
+
+
+                <div class="form-group">
+
+                    <label for="accountLast5">
+                        匯款帳號後五碼
+                    </label>
+
+                    <input
+                        id="accountLast5"
+                        type="text"
+                        maxlength="5"
+                        inputmode="numeric"
+                        placeholder="請輸入5位數字"
+                    >
+
+                </div>
 
             </div>
 
 
-            <!-- 銀行 -->
-            <div class="form-group">
+            <!-- 傳真刷卡欄位 -->
+            <div
+                id="faxCardFields"
+                class="payment-method-section hidden"
+            >
 
-                <label for="bank">
-                    匯款銀行
-                </label>
+                <div class="form-group">
 
-                <input
-                    id="bank"
-                    type="text"
-                    placeholder="例如：台新銀行"
-                >
+                    <label for="faxDate">
+                        傳真日期
+                    </label>
 
-            </div>
+                    <input
+                        id="faxDate"
+                        type="date"
+                    >
+
+                </div>
 
 
-            <!-- 帳號後五碼 -->
-            <div class="form-group">
+                <div class="form-group">
 
-                <label for="accountLast5">
-                    匯款帳號後五碼
-                </label>
+                    <label for="faxTime">
+                        傳真時間
+                    </label>
 
-                <input
-                    id="accountLast5"
-                    type="text"
-                    maxlength="5"
-                    inputmode="numeric"
-                    placeholder="請輸入5位數字"
-                >
+                    <input
+                        id="faxTime"
+                        type="time"
+                    >
+
+                </div>
+
+
+                <div class="form-group">
+
+                    <label for="cardLast4">
+                        信用卡末四碼
+                    </label>
+
+                    <input
+                        id="cardLast4"
+                        type="text"
+                        maxlength="4"
+                        inputmode="numeric"
+                        autocomplete="off"
+                        placeholder="請輸入4位數字"
+                    >
+
+                </div>
+
+                <div class="topup-notice">
+                    🔒 網頁只記錄信用卡末四碼。完整卡號、有效期限及安全碼請勿輸入本系統。
+                </div>
 
             </div>
 
