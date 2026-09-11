@@ -376,24 +376,52 @@ function renderRequests(
               </div>
 
               <div>
-                🏦 銀行：
-                ${escapeHtml(request.bank)}
+                💰 儲值方式：
+                <strong>
+                  ${escapeHtml(getPaymentMethodText(request.paymentMethod))}
+                </strong>
               </div>
 
-              <div>
-                📅 匯款日期：
-                ${escapeHtml(request.transferDate)}
-              </div>
+              ${
+                request.paymentMethod === "FaxCard"
+                  ? `
+                      <div>
+                        📅 傳真日期：
+                        ${escapeHtml(request.faxDate || "-")}
+                      </div>
 
-              <div>
-                🕐 匯款時間：
-                ${escapeHtml(request.transferTime)}
-              </div>
+                      <div>
+                        🕐 傳真時間：
+                        ${escapeHtml(request.faxTime || "-")}
+                      </div>
 
-              <div>
-                💳 帳號後五碼：
-                ${escapeHtml(request.accountLast5)}
-              </div>
+                      <div>
+                        💳 信用卡末四碼：
+                        ${escapeHtml(request.cardLast4 || "-")}
+                      </div>
+                    `
+                  : `
+                      <div>
+                        🏦 銀行：
+                        ${escapeHtml(request.bank || "-")}
+                      </div>
+
+                      <div>
+                        📅 匯款日期：
+                        ${escapeHtml(request.transferDate || "-")}
+                      </div>
+
+                      <div>
+                        🕐 匯款時間：
+                        ${escapeHtml(request.transferTime || "-")}
+                      </div>
+
+                      <div>
+                        💳 帳號後五碼：
+                        ${escapeHtml(request.accountLast5 || "-")}
+                      </div>
+                    `
+              }
 
               <div>
                 👨‍💼 處理人：
@@ -484,6 +512,10 @@ function confirmApprove(
       金額：
       <strong>
         ${formatMoney(request.amount)}
+      </strong><br>
+      儲值方式：
+      <strong>
+        ${escapeHtml(getPaymentMethodText(request.paymentMethod))}
       </strong><br><br>
       核准後會員餘額會立即增加。
     `;
@@ -533,6 +565,10 @@ function confirmReject(
       金額：
       <strong>
         ${formatMoney(request.amount)}
+      </strong><br>
+      儲值方式：
+      <strong>
+        ${escapeHtml(getPaymentMethodText(request.paymentMethod))}
       </strong>
     `;
 
@@ -754,6 +790,21 @@ function findRequest(
     amount: 0
   };
 
+}
+
+
+/**
+ * ========================================
+ * 儲值方式
+ * ========================================
+ */
+function getPaymentMethodText(
+  paymentMethod
+) {
+
+  return paymentMethod === "FaxCard"
+    ? "傳真刷卡"
+    : "銀行匯款";
 }
 
 
@@ -997,3 +1048,4 @@ renderRequests =
     );
 
   };
+
