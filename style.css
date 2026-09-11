@@ -1968,3 +1968,25 @@ button {
     margin-top: 20px;
 
 }
+/* ========================================
+   Header：返回鍵左側、標題真正置中
+   ======================================== */
+
+.header {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.header .back-button {
+    position: absolute;
+    left: 20px;
+    top: 50%;
+    transform: translateY(-50%);
+}
+
+.header .header-title {
+    width: 100%;
+    text-align: center;
+}
