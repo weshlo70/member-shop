@@ -17,37 +17,23 @@ document.addEventListener(
         const token =
             localStorage.getItem("memberToken");
 
-
         if (!token) {
-
-            window.location.href =
-                "index.html";
-
+            window.location.href = "index.html";
             return;
-
         }
 
-
-        // 預設今天日期與時間
-        setDefaultDate();
-
-
-        // 取得會員餘額
+        setDefaultDateTime();
+        bindPaymentMethodEvents();
+        updatePaymentMethodFields();
         loadMember(token);
-
-
-        // 取得儲值紀錄
         loadTopupRequests(token);
 
-
-        // 送出按鈕
         document
             .getElementById("submitTopupButton")
             .addEventListener(
                 "click",
                 submitTopup
             );
-
     }
 );
 
@@ -56,51 +42,95 @@ document.addEventListener(
 // 預設日期 / 時間
 // ========================================
 
-function setDefaultDate() {
+function setDefaultDateTime() {
 
-    const now =
-        new Date();
+    const now = new Date();
 
+    const year = now.getFullYear();
+    const month = String(now.getMonth() + 1).padStart(2, "0");
+    const day = String(now.getDate()).padStart(2, "0");
+    const hours = String(now.getHours()).padStart(2, "0");
+    const minutes = String(now.getMinutes()).padStart(2, "0");
 
-    const year =
-        now.getFullYear();
+    const dateValue = `${year}-${month}-${day}`;
+    const timeValue = `${hours}:${minutes}`;
 
-
-    const month =
-        String(
-            now.getMonth() + 1
-        ).padStart(2, "0");
-
-
-    const day =
-        String(
-            now.getDate()
-        ).padStart(2, "0");
+    document.getElementById("transferDate").value = dateValue;
+    document.getElementById("transferTime").value = timeValue;
+    document.getElementById("faxDate").value = dateValue;
+    document.getElementById("faxTime").value = timeValue;
+}
 
 
-    document.getElementById(
-        "transferDate"
-    ).value =
-        `${year}-${month}-${day}`;
+// ========================================
+// 儲值方式切換
+// ========================================
+
+function bindPaymentMethodEvents() {
+
+    document
+        .querySelectorAll('input[name="paymentMethod"]')
+        .forEach(
+            radio => {
+                radio.addEventListener(
+                    "change",
+                    updatePaymentMethodFields
+                );
+            }
+        );
+}
 
 
-    const hours =
-        String(
-            now.getHours()
-        ).padStart(2, "0");
+function getPaymentMethod() {
+
+    const selected =
+        document.querySelector(
+            'input[name="paymentMethod"]:checked'
+        );
+
+    return selected
+        ? selected.value
+        : "BankTransfer";
+}
 
 
-    const minutes =
-        String(
-            now.getMinutes()
-        ).padStart(2, "0");
+function updatePaymentMethodFields() {
 
+    const paymentMethod =
+        getPaymentMethod();
 
-    document.getElementById(
-        "transferTime"
-    ).value =
-        `${hours}:${minutes}`;
+    const bankFields =
+        document.getElementById(
+            "bankTransferFields"
+        );
 
+    const faxFields =
+        document.getElementById(
+            "faxCardFields"
+        );
+
+    const help =
+        document.getElementById(
+            "paymentMethodHelp"
+        );
+
+    if (paymentMethod === "FaxCard") {
+
+        bankFields.classList.add("hidden");
+        faxFields.classList.remove("hidden");
+
+        help.textContent =
+            "請依飯店提供的刷卡授權書完成傳真，再填寫傳真日期、時間與信用卡末四碼。";
+
+    }
+    else {
+
+        faxFields.classList.add("hidden");
+        bankFields.classList.remove("hidden");
+
+        help.textContent =
+            "請先完成匯款，再填寫下方匯款資料。";
+    }
 }
 
 
@@ -119,10 +149,8 @@ async function loadMember(token) {
                 encodeURIComponent(token)
             );
 
-
         const data =
             await response.json();
-
 
         if (!data.success) {
 
@@ -134,9 +162,7 @@ async function loadMember(token) {
                 "index.html";
 
             return;
-
         }
-
 
         document.getElementById(
             "memberBalance"
@@ -144,7 +170,6 @@ async function loadMember(token) {
             formatMoney(
                 data.member.balance
             );
-
     }
     catch (error) {
 
@@ -152,9 +177,7 @@ async function loadMember(token) {
             "取得會員資料失敗：",
             error
         );
-
     }
-
 }
 
 
@@ -169,7 +192,6 @@ async function loadTopupRequests(token) {
             "topupList"
         );
 
-
     try {
 
         const response =
@@ -179,29 +201,23 @@ async function loadTopupRequests(token) {
                 encodeURIComponent(token)
             );
 
-
         const data =
             await response.json();
 
-
         if (!data.success) {
 
-            list.innerHTML =
-                `
+            list.innerHTML = `
                 <div class="topup-empty">
                     無法取得儲值紀錄
                 </div>
-                `;
+            `;
 
             return;
-
         }
-
 
         renderTopupRequests(
             data.requests || []
         );
-
     }
     catch (error) {
 
@@ -210,16 +226,12 @@ async function loadTopupRequests(token) {
             error
         );
 
-
-        list.innerHTML =
-            `
+        list.innerHTML = `
             <div class="topup-empty">
                 無法取得儲值紀錄，請稍後再試
             </div>
-            `;
-
+        `;
     }
-
 }
 
 
@@ -234,25 +246,93 @@ function renderTopupRequests(requests) {
             "topupList"
         );
 
-
     if (!requests.length) {
 
-        list.innerHTML =
-            `
+        list.innerHTML = `
             <div class="topup-empty">
                 目前沒有儲值申請紀錄
             </div>
-            `;
+        `;
 
         return;
-
     }
-
 
     list.innerHTML =
         requests
             .map(
                 function (request) {
+
+                    const paymentMethod =
+                        normalizePaymentMethod(
+                            request.paymentMethod
+                        );
+
+                    const methodText =
+                        paymentMethod === "FaxCard"
+                            ? "傳真刷卡"
+                            : "銀行匯款";
+
+                    const detailHtml =
+                        paymentMethod === "FaxCard"
+                            ? `
+                                <div>
+                                    傳真日期：
+                                    ${escapeHtml(
+                                        formatTransferDate(
+                                            request.faxDate
+                                        )
+                                    )}
+                                </div>
+
+                                <div>
+                                    傳真時間：
+                                    ${escapeHtml(
+                                        formatTransferTime(
+                                            request.faxTime
+                                        )
+                                    )}
+                                </div>
+
+                                <div>
+                                    信用卡末四碼：
+                                    ${escapeHtml(
+                                        request.cardLast4 || "--"
+                                    )}
+                                </div>
+                              `
+                            : `
+                                <div>
+                                    匯款日期：
+                                    ${escapeHtml(
+                                        formatTransferDate(
+                                            request.transferDate
+                                        )
+                                    )}
+                                </div>
+
+                                <div>
+                                    匯款時間：
+                                    ${escapeHtml(
+                                        formatTransferTime(
+                                            request.transferTime
+                                        )
+                                    )}
+                                </div>
+
+                                <div>
+                                    匯款銀行：
+                                    ${escapeHtml(
+                                        request.bank || "--"
+                                    )}
+                                </div>
+
+                                <div>
+                                    帳號後五碼：
+                                    ${escapeHtml(
+                                        request.accountLast5 || "--"
+                                    )}
+                                </div>
+                              `;
 
                     return `
                         <div class="topup-item">
@@ -275,7 +355,6 @@ function renderTopupRequests(requests) {
 
                                 </div>
 
-
                                 <div class="topup-amount">
                                     ${formatMoney(
                                         request.amount
@@ -284,43 +363,27 @@ function renderTopupRequests(requests) {
 
                             </div>
 
-
                             <div class="topup-item-info">
 
                                 <div>
-                                    匯款日期：
-                                    ${escapeHtml(
-                                        formatTransferDate(
-                                            request.transferDate
-                                        )
-                                    )}
+                                    儲值方式：
+                                    ${escapeHtml(methodText)}
                                 </div>
 
-                                <div>
-                                    匯款時間：
-                                    ${escapeHtml(
-                                        formatTransferTime(
-                                            request.transferTime
-                                        )
-                                    )}
-                                </div>
+                                ${detailHtml}
 
-                                <div>
-                                    匯款銀行：
-                                    ${escapeHtml(
-                                        request.bank
-                                    )}
-                                </div>
-
-                                <div>
-                                    帳號後五碼：
-                                    ${escapeHtml(
-                                        request.accountLast5
-                                    )}
-                                </div>
+                                ${
+                                    request.note
+                                        ? `
+                                            <div>
+                                                備註：
+                                                ${escapeHtml(request.note)}
+                                            </div>
+                                          `
+                                        : ""
+                                }
 
                             </div>
-
 
                             <div class="topup-item-bottom">
 
@@ -338,11 +401,9 @@ function renderTopupRequests(requests) {
 
                         </div>
                     `;
-
                 }
             )
             .join("");
-
 }
 
 
@@ -357,136 +418,136 @@ function submitTopup() {
             "memberToken"
         );
 
-
     if (!token) {
-
-        window.location.href =
-            "index.html";
-
+        window.location.href = "index.html";
         return;
-
     }
-
 
     const amount =
         document.getElementById(
             "amount"
         ).value.trim();
 
+    const paymentMethod =
+        getPaymentMethod();
 
     const transferDate =
         document.getElementById(
             "transferDate"
         ).value;
 
-
     const transferTime =
         document.getElementById(
             "transferTime"
         ).value;
-
 
     const bank =
         document.getElementById(
             "bank"
         ).value.trim();
 
-
     const accountLast5 =
         document.getElementById(
             "accountLast5"
         ).value.trim();
 
+    const faxDate =
+        document.getElementById(
+            "faxDate"
+        ).value;
+
+    const faxTime =
+        document.getElementById(
+            "faxTime"
+        ).value;
+
+    const cardLast4 =
+        document.getElementById(
+            "cardLast4"
+        ).value.trim();
 
     const note =
         document.getElementById(
             "note"
         ).value.trim();
 
-
     const message =
         document.getElementById(
             "topupMessage"
         );
 
-
     message.textContent = "";
-
-
-    // ========================================
-    // 前端驗證
-    // ========================================
 
     if (
         !amount ||
         Number(amount) <= 0 ||
-        !Number.isInteger(
-            Number(amount)
-        )
+        !Number.isInteger(Number(amount))
     ) {
-
         message.textContent =
-            "請輸入正確的匯款金額";
-
+            "請輸入正確的儲值金額";
         return;
-
     }
 
+    if (paymentMethod === "FaxCard") {
 
-    if (!transferDate) {
+        if (!faxDate) {
+            message.textContent =
+                "請選擇傳真日期";
+            return;
+        }
 
-        message.textContent =
-            "請選擇匯款日期";
+        if (!faxTime) {
+            message.textContent =
+                "請選擇傳真時間";
+            return;
+        }
 
-        return;
+        if (!/^\d{4}$/.test(cardLast4)) {
+            message.textContent =
+                "請輸入4位數字的信用卡末四碼";
+            return;
+        }
+    }
+    else {
 
+        if (!transferDate) {
+            message.textContent =
+                "請選擇匯款日期";
+            return;
+        }
+
+        if (!transferTime) {
+            message.textContent =
+                "請選擇匯款時間";
+            return;
+        }
+
+        if (!bank) {
+            message.textContent =
+                "請輸入匯款銀行";
+            return;
+        }
+
+        if (!/^\d{5}$/.test(accountLast5)) {
+            message.textContent =
+                "請輸入5位數字的匯款帳號後五碼";
+            return;
+        }
     }
 
-
-    if (!transferTime) {
-
-        message.textContent =
-            "請選擇匯款時間";
-
-        return;
-
-    }
-
-
-    if (!bank) {
-
-        message.textContent =
-            "請輸入匯款銀行";
-
-        return;
-
-    }
-
-
-    if (!/^\d{5}$/.test(accountLast5)) {
-
-        message.textContent =
-            "請輸入5位數字的匯款帳號後五碼";
-
-        return;
-
-    }
-
-
-    // ========================================
-    // 顯示自訂確認視窗
-    // ========================================
-
-    showConfirmModal(
+    showConfirmModal({
+        token,
         amount,
+        paymentMethod,
         transferDate,
         transferTime,
         bank,
         accountLast5,
-        note,
-        token
-    );
-
+        faxDate,
+        faxTime,
+        cardLast4,
+        note
+    });
 }
 
 
@@ -494,27 +555,16 @@ function submitTopup() {
 // 真正送出儲值申請
 // ========================================
 
-async function sendTopupRequest(
-    token,
-    amount,
-    transferDate,
-    transferTime,
-    bank,
-    accountLast5,
-    note
-) {
+async function sendTopupRequest(formData) {
 
     setLoading(true);
-
 
     const button =
         document.getElementById(
             "submitTopupButton"
         );
 
-
     button.disabled = true;
-
 
     try {
 
@@ -522,54 +572,57 @@ async function sendTopupRequest(
             await fetch(
                 API_URL,
                 {
-
                     method: "POST",
-
                     headers: {
                         "Content-Type":
                             "text/plain;charset=utf-8"
                     },
-
                     body:
                         JSON.stringify({
-
                             action:
                                 "createTopupRequest",
-
                             token:
-                                token,
-
+                                formData.token,
                             amount:
-                                Number(amount),
-
+                                Number(formData.amount),
+                            paymentMethod:
+                                formData.paymentMethod,
                             transferDate:
-                                transferDate,
-
+                                formData.paymentMethod === "BankTransfer"
+                                    ? formData.transferDate
+                                    : "",
                             transferTime:
-                                transferTime,
-
+                                formData.paymentMethod === "BankTransfer"
+                                    ? formData.transferTime
+                                    : "",
                             bank:
-                                bank,
-
+                                formData.paymentMethod === "BankTransfer"
+                                    ? formData.bank
+                                    : "",
                             accountLast5:
-                                accountLast5,
-
+                                formData.paymentMethod === "BankTransfer"
+                                    ? formData.accountLast5
+                                    : "",
+                            faxDate:
+                                formData.paymentMethod === "FaxCard"
+                                    ? formData.faxDate
+                                    : "",
+                            faxTime:
+                                formData.paymentMethod === "FaxCard"
+                                    ? formData.faxTime
+                                    : "",
+                            cardLast4:
+                                formData.paymentMethod === "FaxCard"
+                                    ? formData.cardLast4
+                                    : "",
                             note:
-                                note
-
+                                formData.note
                         })
-
                 }
             );
 
-
         const data =
             await response.json();
-
-
-        // ========================================
-        // 後端回傳錯誤
-        // ========================================
 
         if (!data.success) {
 
@@ -580,49 +633,42 @@ async function sendTopupRequest(
                 "儲值申請失敗";
 
             return;
-
         }
-
-
-        // ========================================
-        // 申請成功
-        // ========================================
 
         showSuccessModal(
             data.request.requestId
         );
 
-
-        // 清空表單
         document.getElementById(
             "amount"
         ).value = "";
-
 
         document.getElementById(
             "bank"
         ).value = "";
 
-
         document.getElementById(
             "accountLast5"
         ).value = "";
 
+        document.getElementById(
+            "cardLast4"
+        ).value = "";
 
         document.getElementById(
             "note"
         ).value = "";
 
+        setDefaultDateTime();
 
         document.getElementById(
             "topupMessage"
         ).textContent =
             "儲值申請已送出，等待確認";
 
-
-        // 重新載入儲值紀錄
-        loadTopupRequests(token);
-
+        loadTopupRequests(
+            formData.token
+        );
     }
     catch (error) {
 
@@ -631,21 +677,16 @@ async function sendTopupRequest(
             error
         );
 
-
         document.getElementById(
             "topupMessage"
         ).textContent =
             "無法連線到會員系統，請稍後再試";
-
     }
     finally {
 
         setLoading(false);
-
         button.disabled = false;
-
     }
-
 }
 
 
@@ -653,34 +694,111 @@ async function sendTopupRequest(
 // 儲值申請確認視窗
 // ========================================
 
-function showConfirmModal(
-    amount,
-    transferDate,
-    transferTime,
-    bank,
-    accountLast5,
-    note,
-    token
-) {
+function showConfirmModal(formData) {
 
     const modal =
         document.createElement(
             "div"
         );
 
-
     modal.className =
         "topup-success-modal";
 
+    const isFaxCard =
+        formData.paymentMethod === "FaxCard";
+
+    const detailHtml =
+        isFaxCard
+            ? `
+                <div class="confirm-row">
+                    <span>儲值方式</span>
+                    <strong>傳真刷卡</strong>
+                </div>
+
+                <div class="confirm-row">
+                    <span>傳真日期</span>
+                    <strong>
+                        ${escapeHtml(
+                            formatTransferDate(
+                                formData.faxDate
+                            )
+                        )}
+                    </strong>
+                </div>
+
+                <div class="confirm-row">
+                    <span>傳真時間</span>
+                    <strong>
+                        ${escapeHtml(
+                            formatTransferTime(
+                                formData.faxTime
+                            )
+                        )}
+                    </strong>
+                </div>
+
+                <div class="confirm-row">
+                    <span>信用卡末四碼</span>
+                    <strong>
+                        ${escapeHtml(
+                            formData.cardLast4
+                        )}
+                    </strong>
+                </div>
+              `
+            : `
+                <div class="confirm-row">
+                    <span>儲值方式</span>
+                    <strong>銀行匯款</strong>
+                </div>
+
+                <div class="confirm-row">
+                    <span>匯款日期</span>
+                    <strong>
+                        ${escapeHtml(
+                            formatTransferDate(
+                                formData.transferDate
+                            )
+                        )}
+                    </strong>
+                </div>
+
+                <div class="confirm-row">
+                    <span>匯款時間</span>
+                    <strong>
+                        ${escapeHtml(
+                            formatTransferTime(
+                                formData.transferTime
+                            )
+                        )}
+                    </strong>
+                </div>
+
+                <div class="confirm-row">
+                    <span>匯款銀行</span>
+                    <strong>
+                        ${escapeHtml(
+                            formData.bank
+                        )}
+                    </strong>
+                </div>
+
+                <div class="confirm-row">
+                    <span>帳號後五碼</span>
+                    <strong>
+                        ${escapeHtml(
+                            formData.accountLast5
+                        )}
+                    </strong>
+                </div>
+              `;
 
     modal.innerHTML = `
-
         <div class="topup-success-box">
 
             <div class="topup-success-title">
                 確認送出儲值申請
             </div>
-
 
             <div class="topup-confirm-text">
 
@@ -688,104 +806,29 @@ function showConfirmModal(
                     確定要送出這筆儲值申請嗎？
                 </div>
 
-
                 <div class="confirm-row">
-
-                    <span>
-                        匯款金額
-                    </span>
-
+                    <span>儲值金額</span>
                     <strong>
-                        ${formatMoney(amount)}
+                        ${formatMoney(formData.amount)}
                     </strong>
-
                 </div>
 
-
-                <div class="confirm-row">
-
-                    <span>
-                        匯款日期
-                    </span>
-
-                    <strong>
-                        ${escapeHtml(
-                            formatTransferDate(
-                                transferDate
-                            )
-                        )}
-                    </strong>
-
-                </div>
-
-
-                <div class="confirm-row">
-
-                    <span>
-                        匯款時間
-                    </span>
-
-                    <strong>
-                        ${escapeHtml(
-                            formatTransferTime(
-                                transferTime
-                            )
-                        )}
-                    </strong>
-
-                </div>
-
-
-                <div class="confirm-row">
-
-                    <span>
-                        匯款銀行
-                    </span>
-
-                    <strong>
-                        ${escapeHtml(
-                            bank
-                        )}
-                    </strong>
-
-                </div>
-
-
-                <div class="confirm-row">
-
-                    <span>
-                        帳號後五碼
-                    </span>
-
-                    <strong>
-                        ${escapeHtml(
-                            accountLast5
-                        )}
-                    </strong>
-
-                </div>
-
+                ${detailHtml}
 
                 ${
-                    note
+                    formData.note
                         ? `
                             <div class="confirm-row">
-
-                                <span>
-                                    備註
-                                </span>
-
+                                <span>備註</span>
                                 <strong>
-                                    ${escapeHtml(note)}
+                                    ${escapeHtml(formData.note)}
                                 </strong>
-
                             </div>
                           `
                         : ""
                 }
 
             </div>
-
 
             <div class="confirm-buttons">
 
@@ -795,7 +838,6 @@ function showConfirmModal(
                 >
                     取消
                 </button>
-
 
                 <button
                     class="primary-button"
@@ -807,18 +849,11 @@ function showConfirmModal(
             </div>
 
         </div>
-
     `;
-
 
     document.body.appendChild(
         modal
     );
-
-
-    // ========================================
-    // 取消
-    // ========================================
 
     document
         .getElementById(
@@ -827,16 +862,9 @@ function showConfirmModal(
         .addEventListener(
             "click",
             function () {
-
                 modal.remove();
-
             }
         );
-
-
-    // ========================================
-    // 確定送出
-    // ========================================
 
     document
         .getElementById(
@@ -845,31 +873,10 @@ function showConfirmModal(
         .addEventListener(
             "click",
             function () {
-
                 modal.remove();
-
-
-                sendTopupRequest(
-
-                    token,
-
-                    amount,
-
-                    transferDate,
-
-                    transferTime,
-
-                    bank,
-
-                    accountLast5,
-
-                    note
-
-                );
-
+                sendTopupRequest(formData);
             }
         );
-
 }
 
 
@@ -884,24 +891,19 @@ function showSuccessModal(requestId) {
             "div"
         );
 
-
     modal.className =
         "topup-success-modal";
 
-
     modal.innerHTML = `
-
         <div class="topup-success-box">
 
             <div class="topup-success-icon">
                 ✓
             </div>
 
-
             <div class="topup-success-title">
                 儲值申請已送出
             </div>
-
 
             <div class="topup-success-text">
 
@@ -909,25 +911,19 @@ function showSuccessModal(requestId) {
                     申請編號
                 </div>
 
-
                 <div class="success-request-id">
-                    ${escapeHtml(
-                        requestId
-                    )}
+                    ${escapeHtml(requestId)}
                 </div>
-
 
                 <div class="success-label success-status-label">
                     目前狀態
                 </div>
-
 
                 <div class="success-status">
                     ⏳ 等待確認
                 </div>
 
             </div>
-
 
             <button
                 class="primary-button"
@@ -937,14 +933,11 @@ function showSuccessModal(requestId) {
             </button>
 
         </div>
-
     `;
-
 
     document.body.appendChild(
         modal
     );
-
 
     document
         .getElementById(
@@ -953,12 +946,28 @@ function showSuccessModal(requestId) {
         .addEventListener(
             "click",
             function () {
-
                 modal.remove();
-
             }
         );
+}
 
+
+// ========================================
+// 儲值方式
+// ========================================
+
+function normalizePaymentMethod(value) {
+
+    const method =
+        String(value || "")
+            .trim();
+
+    // 舊資料沒有 PaymentMethod，視為銀行匯款
+    if (!method) {
+        return "BankTransfer";
+    }
+
+    return method;
 }
 
 
@@ -972,28 +981,18 @@ function getStatusText(status) {
         String(status)
             .toLowerCase()
     ) {
-
         case "pending":
-
             return "⏳ 等待確認";
 
-
         case "approved":
-
             return "✓ 已入帳";
 
-
         case "rejected":
-
             return "✕ 已拒絕";
 
-
         default:
-
             return status || "未知";
-
     }
-
 }
 
 
@@ -1007,28 +1006,18 @@ function getStatusClass(status) {
         String(status)
             .toLowerCase()
     ) {
-
         case "pending":
-
             return "topup-status pending";
 
-
         case "approved":
-
             return "topup-status approved";
 
-
         case "rejected":
-
             return "topup-status rejected";
 
-
         default:
-
             return "topup-status";
-
     }
-
 }
 
 
@@ -1039,27 +1028,11 @@ function getStatusClass(status) {
 function escapeHtml(value) {
 
     return String(value || "")
-        .replace(
-            /&/g,
-            "&amp;"
-        )
-        .replace(
-            /</g,
-            "&lt;"
-        )
-        .replace(
-            />/g,
-            "&gt;"
-        )
-        .replace(
-            /"/g,
-            "&quot;"
-        )
-        .replace(
-            /'/g,
-            "&#039;"
-        );
-
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#039;");
 }
 
 
@@ -1072,32 +1045,23 @@ function formatMoney(amount) {
     return "$" +
         Number(amount || 0)
             .toLocaleString("zh-TW");
-
 }
 
 
 // ========================================
-// 匯款日期格式
+// 日期格式
 // ========================================
 
 function formatTransferDate(value) {
 
     if (!value) {
-
         return "--";
-
     }
-
 
     const date =
         new Date(value);
 
-
-    if (
-        !isNaN(
-            date.getTime()
-        )
-    ) {
+    if (!isNaN(date.getTime())) {
 
         return (
             date.getFullYear() +
@@ -1110,39 +1074,27 @@ function formatTransferDate(value) {
                 date.getDate()
             ).padStart(2, "0")
         );
-
     }
 
-
     return String(value);
-
 }
 
 
 // ========================================
-// 匯款時間格式
+// 時間格式
 // ========================================
 
 function formatTransferTime(value) {
 
     if (!value) {
-
         return "--";
-
     }
-
 
     const date =
         new Date(value);
 
-
-    // Google Sheets 時間欄位
-    // 例如：
-    // Sat Dec 30 1899 17:10:00 GMT+0800
     if (
-        !isNaN(
-            date.getTime()
-        ) &&
+        !isNaN(date.getTime()) &&
         date.getFullYear() <= 1900
     ) {
 
@@ -1155,16 +1107,12 @@ function formatTransferTime(value) {
                 date.getMinutes()
             ).padStart(2, "0")
         );
-
     }
 
-
-    // 已經是 HH:mm
     const match =
         String(value).match(
             /^(\d{1,2}):(\d{2})/
         );
-
 
     if (match) {
 
@@ -1175,12 +1123,9 @@ function formatTransferTime(value) {
             ":" +
             match[2]
         );
-
     }
 
-
     return String(value);
-
 }
 
 
@@ -1195,20 +1140,10 @@ function setLoading(show) {
             "loading"
         );
 
-
     if (show) {
-
-        loading.classList.remove(
-            "hidden"
-        );
-
+        loading.classList.remove("hidden");
     }
     else {
-
-        loading.classList.add(
-            "hidden"
-        );
-
+        loading.classList.add("hidden");
     }
-
 }
