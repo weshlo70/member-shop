@@ -1,177 +1,158 @@
-// ========================================
-// Apps Script API 網址
-// ========================================
+
+/* ========================================
+   Apps Script API 網址
+======================================== */
 
 const API_URL = "https://script.google.com/macros/s/AKfycbzoiQXbZQt12Ez_2yz2aQo4guCJwrmggYgGZr2XhB1N0xXXXH7qLUmp4-9xzDhMCvtN/exec";
 
 
-// ========================================
-// DOM
-// ========================================
+/* ========================================
+   DOM
+======================================== */
 
-const loginPage =
-    document.getElementById("loginPage");
+const loginPage = document.getElementById("loginPage");
+const homePage = document.getElementById("homePage");
 
-const homePage =
-    document.getElementById("homePage");
+// 改成手機號碼欄位
+const phoneInput = document.getElementById("phone");
 
-const memberIdInput =
-    document.getElementById("memberId");
-
-const idLast4Input =
-    document.getElementById("idLast4");
-
-const loginButton =
-    document.getElementById("loginButton");
-
-const logoutButton =
-    document.getElementById("logoutButton");
-
-const loginMessage =
-    document.getElementById("loginMessage");
-
-const loading =
-    document.getElementById("loading");
+const idLast4Input = document.getElementById("idLast4");
+const loginButton = document.getElementById("loginButton");
+const logoutButton = document.getElementById("logoutButton");
+const loginMessage = document.getElementById("loginMessage");
+const loading = document.getElementById("loading");
 
 
-// ========================================
-// 啟動
-// ========================================
+/* ========================================
+   啟動
+======================================== */
 
-document.addEventListener(
-    "DOMContentLoaded",
-    function () {
+document.addEventListener("DOMContentLoaded", function () {
 
-        const token =
-            localStorage.getItem("memberToken");
+    const token = localStorage.getItem("memberToken");
 
-        if (token) {
-
-            loadMember(token);
-
-        }
-
+    if (token) {
+        loadMember(token);
     }
-);
+
+});
 
 
-// ========================================
-// 登入
-// ========================================
+/* ========================================
+   登入按鈕
+======================================== */
 
-loginButton.addEventListener(
-    "click",
-    login
-);
+loginButton.addEventListener("click", login);
 
 
-idLast4Input.addEventListener(
-    "keydown",
-    function (event) {
+// 在手機號碼欄按 Enter 時登入
+phoneInput.addEventListener("keydown", function (event) {
 
-        if (event.key === "Enter") {
-            login();
-        }
-
+    if (event.key === "Enter") {
+        idLast4Input.focus();
     }
-);
 
+});
+
+
+// 在身分證末4碼欄按 Enter 時登入
+idLast4Input.addEventListener("keydown", function (event) {
+
+    if (event.key === "Enter") {
+        login();
+    }
+
+});
+
+
+/* ========================================
+   會員登入
+   登入方式：手機號碼 + 身分證末4碼
+======================================== */
 
 async function login() {
 
-    const memberId =
-        memberIdInput.value
-            .trim()
-            .toUpperCase();
-
-    const idLast4 =
-        idLast4Input.value.trim();
-
+    const phone = phoneInput.value.trim();
+    const idLast4 = idLast4Input.value.trim();
 
     loginMessage.textContent = "";
 
-
-    if (!memberId) {
+    // 檢查手機號碼
+    if (!/^09\d{8}$/.test(phone)) {
 
         loginMessage.textContent =
-            "請輸入會員編號";
+            "請輸入正確的10位數手機號碼";
 
+        phoneInput.focus();
         return;
+
     }
 
-
+    // 檢查身分證末4碼
     if (!/^\d{4}$/.test(idLast4)) {
 
         loginMessage.textContent =
             "請輸入4位數字的身分證末4碼";
 
+        idLast4Input.focus();
         return;
+
     }
 
-
     setLoading(true);
-
-
     loginButton.disabled = true;
-
 
     try {
 
-        const response =
-            await fetch(API_URL, {
+        const response = await fetch(API_URL, {
 
-                method: "POST",
+            method: "POST",
 
-                headers: {
+            headers: {
+                "Content-Type": "text/plain;charset=utf-8"
+            },
 
-                    "Content-Type":
-                        "text/plain;charset=utf-8"
+            body: JSON.stringify({
 
-                },
+                action: "login",
 
-                body: JSON.stringify({
+                // 改用手機號碼
+                phone: phone,
 
-                    action: "login",
+                idLast4: idLast4
 
-                    memberId: memberId,
+            })
 
-                    idLast4: idLast4
+        });
 
-                })
-
-            });
-
-
-        const data =
-            await response.json();
-
+        const data = await response.json();
 
         if (!data.success) {
 
             loginMessage.textContent =
-                data.message ||
-                "登入失敗";
+                data.message || "登入失敗，請確認輸入資料";
 
             return;
+
         }
 
-
-        // 保存 Token
-
+        // 保存登入 Token
         localStorage.setItem(
             "memberToken",
             data.token
         );
 
-
-        // 顯示會員資料
-
+        // 顯示會員首頁
         showMember(data.member);
+
+        // 清除登入欄位
+        phoneInput.value = "";
+        idLast4Input.value = "";
 
     }
     catch (error) {
 
-        console.error(error);
+        console.error("會員登入錯誤：", error);
 
         loginMessage.textContent =
             "無法連線到會員系統，請稍後再試";
@@ -180,7 +161,6 @@ async function login() {
     finally {
 
         setLoading(false);
-
         loginButton.disabled = false;
 
     }
@@ -188,51 +168,42 @@ async function login() {
 }
 
 
-// ========================================
-// 取得會員資料
-// ========================================
+/* ========================================
+   取得會員資料
+======================================== */
 
 async function loadMember(token) {
 
     setLoading(true);
 
-
     try {
 
-        const response =
-            await fetch(
-                API_URL +
-                "?action=member&token=" +
-                encodeURIComponent(token)
-            );
+        const response = await fetch(
+            API_URL +
+            "?action=member&token=" +
+            encodeURIComponent(token)
+        );
 
-
-        const data =
-            await response.json();
-
+        const data = await response.json();
 
         if (!data.success) {
 
-            localStorage.removeItem(
-                "memberToken"
-            );
+            localStorage.removeItem("memberToken");
 
             showLogin();
 
             return;
-        }
 
+        }
 
         showMember(data.member);
 
     }
     catch (error) {
 
-        console.error(error);
+        console.error("取得會員資料錯誤：", error);
 
-        localStorage.removeItem(
-            "memberToken"
-        );
+        localStorage.removeItem("memberToken");
 
         showLogin();
 
@@ -246,169 +217,131 @@ async function loadMember(token) {
 }
 
 
-// ========================================
-// 顯示會員首頁
-// ========================================
+/* ========================================
+   顯示會員首頁
+======================================== */
 
 function showMember(member) {
 
-    document.getElementById(
-        "memberName"
-    ).textContent =
-        member.name;
+    document.getElementById("memberName").textContent =
+        member.name || "";
 
+    document.getElementById("memberNameDisplay").textContent =
+        member.name || "";
 
-    document.getElementById(
-        "memberNameDisplay"
-    ).textContent =
-        member.name;
+    // 會員編號仍然保留，只用於顯示會員資料
+    document.getElementById("memberIdDisplay").textContent =
+        member.memberId || "";
 
-
-    document.getElementById(
-        "memberIdDisplay"
-    ).textContent =
-        member.memberId;
-
-
-    document.getElementById(
-        "memberBalance"
-    ).textContent =
+    document.getElementById("memberBalance").textContent =
         formatMoney(member.balance);
 
-
-    loginPage.classList.add(
-        "hidden"
-    );
-
-    homePage.classList.remove(
-        "hidden"
-    );
+    loginPage.classList.add("hidden");
+    homePage.classList.remove("hidden");
 
 }
 
 
-// ========================================
-// 顯示登入頁
-// ========================================
+/* ========================================
+   顯示登入頁
+======================================== */
 
 function showLogin() {
 
-    homePage.classList.add(
-        "hidden"
-    );
-
-    loginPage.classList.remove(
-        "hidden"
-    );
+    homePage.classList.add("hidden");
+    loginPage.classList.remove("hidden");
 
 }
 
 
-// ========================================
-// 登出
-// ========================================
+/* ========================================
+   會員登出
+======================================== */
 
-logoutButton.addEventListener(
-    "click",
-    async function () {
+logoutButton.addEventListener("click", async function () {
 
-        const token =
-            localStorage.getItem(
-                "memberToken"
-            );
+    const token = localStorage.getItem("memberToken");
 
+    if (token) {
 
-        if (token) {
+        try {
 
-            try {
+            await fetch(API_URL, {
 
-                await fetch(API_URL, {
+                method: "POST",
 
-                    method: "POST",
+                headers: {
+                    "Content-Type": "text/plain;charset=utf-8"
+                },
 
-                    headers: {
+                body: JSON.stringify({
 
-                        "Content-Type":
-                            "text/plain;charset=utf-8"
+                    action: "logout",
 
-                    },
+                    token: token
 
-                    body: JSON.stringify({
+                })
 
-                        action: "logout",
+            });
 
-                        token: token
+        }
+        catch (error) {
 
-                    })
-
-                });
-
-            }
-            catch (error) {
-
-                console.error(error);
-
-            }
+            console.error("會員登出錯誤：", error);
 
         }
 
-
-        localStorage.removeItem(
-            "memberToken"
-        );
-
-
-        showLogin();
-
-
-        memberIdInput.value = "";
-
-        idLast4Input.value = "";
-
-        loginMessage.textContent = "";
-
     }
-);
+
+    localStorage.removeItem("memberToken");
+
+    showLogin();
+
+    phoneInput.value = "";
+    idLast4Input.value = "";
+    loginMessage.textContent = "";
+
+});
 
 
-// ========================================
-// 金額格式
-// ========================================
+/* ========================================
+   金額格式
+======================================== */
 
 function formatMoney(amount) {
 
     return "$" +
-        Number(amount || 0)
-            .toLocaleString("zh-TW");
+        Number(amount || 0).toLocaleString("zh-TW");
 
 }
 
 
-// ========================================
-// Loading
-// ========================================
+/* ========================================
+   Loading 載入畫面
+======================================== */
 
 function setLoading(show) {
 
     if (show) {
 
-        loading.classList.remove(
-            "hidden"
-        );
+        loading.classList.remove("hidden");
 
     }
     else {
 
-        loading.classList.add(
-            "hidden"
-        );
+        loading.classList.add("hidden");
 
     }
 
 }
+
+
+/* ========================================
+   開啟商品頁
+======================================== */
+
 function openProducts() {
 
-    window.location.href =
-        "products.html";
+    window.location.href = "products.html";
 
 }
