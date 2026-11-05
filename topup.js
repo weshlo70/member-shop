@@ -487,7 +487,12 @@ function submitTopup() {
             "請輸入正確的儲值金額";
         return;
     }
-
+   // 新增：最低儲值金額限制
+    if (Number(amount) < 2400) {
+         message.textContent =
+        "每次儲值金額不得低於 NT$2,400";
+        return;
+        }
     if (paymentMethod === "FaxCard") {
 
         if (!faxDate) {
