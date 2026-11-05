@@ -109,6 +109,8 @@ function updatePaymentMethodFields() {
             "faxCardFields"
         );
 
+    const storeFields = document.getElementById("storePaymentFields");
+
     const help =
         document.getElementById(
             "paymentMethodHelp"
@@ -118,14 +120,22 @@ function updatePaymentMethodFields() {
 
         bankFields.classList.add("hidden");
         faxFields.classList.remove("hidden");
+        storeFields.classList.add("hidden");
 
         help.textContent =
             "請依飯店提供的刷卡授權書完成傳真，再填寫傳真日期、時間與信用卡末四碼。";
 
     }
+    else if (paymentMethod === "StorePayment") {
+        faxFields.classList.add("hidden");
+        bankFields.classList.add("hidden");
+        storeFields.classList.remove("hidden");
+        help.textContent = "請填寫現場收款人員姓名；送出後仍須等待管理員確認收款並核准。";
+    }
     else {
 
         faxFields.classList.add("hidden");
+        storeFields.classList.add("hidden");
         bankFields.classList.remove("hidden");
 
         help.textContent =
@@ -268,12 +278,13 @@ function renderTopupRequests(requests) {
                         );
 
                     const methodText =
-                        paymentMethod === "FaxCard"
-                            ? "傳真刷卡"
-                            : "銀行匯款";
+                        paymentMethod === "FaxCard" ? "傳真刷卡" :
+                        paymentMethod === "StorePayment" ? "現場商店付款" : "銀行匯款";
 
                     const detailHtml =
-                        paymentMethod === "FaxCard"
+                        paymentMethod === "StorePayment"
+                            ? `<div>現場收款人員：${escapeHtml(request.cashierName || "--")}</div>`
+                            : paymentMethod === "FaxCard"
                             ? `
                                 <div>
                                     傳真日期：
@@ -466,6 +477,8 @@ function submitTopup() {
             "cardLast4"
         ).value.trim();
 
+    const cashierName = document.getElementById("cashierName").value.trim();
+
     const note =
         document.getElementById(
             "note"
@@ -487,13 +500,19 @@ function submitTopup() {
             "請輸入正確的儲值金額";
         return;
     }
-   // 新增：最低儲值金額限制
+
     if (Number(amount) < 2400) {
-         message.textContent =
-        "每次儲值金額不得低於 NT$2,400";
+        message.textContent = "每次儲值金額不得低於 NT$2,400";
         return;
+    }
+
+    if (paymentMethod === "StorePayment") {
+        if (!cashierName) {
+            message.textContent = "請輸入現場收款人員姓名";
+            return;
         }
-    if (paymentMethod === "FaxCard") {
+    }
+    else if (paymentMethod === "FaxCard") {
 
         if (!faxDate) {
             message.textContent =
@@ -551,6 +570,7 @@ function submitTopup() {
         faxDate,
         faxTime,
         cardLast4,
+        cashierName,
         note
     });
 }
@@ -620,6 +640,8 @@ async function sendTopupRequest(formData) {
                                 formData.paymentMethod === "FaxCard"
                                     ? formData.cardLast4
                                     : "",
+                            cashierName:
+                                formData.paymentMethod === "StorePayment" ? formData.cashierName : "",
                             note:
                                 formData.note
                         })
@@ -647,6 +669,8 @@ async function sendTopupRequest(formData) {
         document.getElementById(
             "amount"
         ).value = "";
+
+        document.getElementById("cashierName").value = "";
 
         document.getElementById(
             "bank"
@@ -713,7 +737,10 @@ function showConfirmModal(formData) {
         formData.paymentMethod === "FaxCard";
 
     const detailHtml =
-        isFaxCard
+        formData.paymentMethod === "StorePayment"
+            ? `<div class="confirm-row"><span>儲值方式</span><strong>現場商店付款</strong></div>
+               <div class="confirm-row"><span>現場收款人員</span><strong>${escapeHtml(formData.cashierName)}</strong></div>`
+            : isFaxCard
             ? `
                 <div class="confirm-row">
                     <span>儲值方式</span>
@@ -1152,3 +1179,4 @@ function setLoading(show) {
         loading.classList.add("hidden");
     }
 }
+
