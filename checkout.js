@@ -431,6 +431,11 @@ document.getElementById(
 );
 
 
+const invoiceSameCheckbox = document.getElementById("invoiceSameAsShipping");
+invoiceSameCheckbox.addEventListener("change", () => {
+    document.getElementById("invoiceAddressWrap").hidden = invoiceSameCheckbox.checked;
+});
+
 async function submitOrder() {
 
     const token =
@@ -493,6 +498,24 @@ async function submitOrder() {
         );
 
 
+    const delivery = {
+        recipientName: document.getElementById("recipientName").value.trim(),
+        recipientPhone: document.getElementById("recipientPhone").value.trim(),
+        shippingAddress: document.getElementById("shippingAddress").value.trim(),
+        invoiceAddress: invoiceSameCheckbox.checked
+            ? document.getElementById("shippingAddress").value.trim()
+            : document.getElementById("invoiceAddress").value.trim()
+    };
+    if (!delivery.recipientName || !delivery.recipientPhone ||
+        !delivery.shippingAddress || !delivery.invoiceAddress) {
+        document.getElementById("checkoutMessage").textContent = "請完整填寫收件人、電話、收件地址及發票地址";
+        return;
+    }
+    if (!/^[0-9+()\-\s]{7,30}$/.test(delivery.recipientPhone)) {
+        document.getElementById("checkoutMessage").textContent = "請輸入有效的聯絡電話";
+        return;
+    }
+
     button.disabled = true;
 
 
@@ -525,7 +548,8 @@ async function submitOrder() {
                                 token,
 
                             items:
-                                items
+                                items,
+                            delivery: delivery
 
                         })
 
