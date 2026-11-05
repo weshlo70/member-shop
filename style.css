@@ -1990,3 +1990,12 @@ button {
     width: 100%;
     text-align: center;
 }
+
+/* Checkout delivery fields */
+.delivery-card {display:flex;flex-direction:column;gap:10px;margin-bottom:20px}
+.delivery-card label {font-weight:600;font-size:15px}
+.delivery-card input:not([type="checkbox"]),.delivery-card textarea {box-sizing:border-box;width:100%;padding:12px;border:1px solid #d0d5dd;border-radius:8px;background:#fff;color:#222;font:inherit}
+.delivery-card input:focus,.delivery-card textarea:focus {outline:2px solid #444;outline-offset:1px}
+.delivery-card .delivery-check {display:flex;align-items:center;gap:9px;cursor:pointer}
+.delivery-card .delivery-check input {width:18px;height:18px}
+.required-mark {color:#b42318}
