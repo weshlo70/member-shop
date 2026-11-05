@@ -113,6 +113,21 @@
         </div>
 
 
+        <div class="checkout-card delivery-card">
+            <div class="card-title">收件與發票資訊</div>
+            <label for="recipientName">收件人姓名 <span class="required-mark">*</span></label>
+            <input id="recipientName" type="text" maxlength="60" autocomplete="name" required placeholder="請輸入收件人姓名">
+            <label for="recipientPhone">聯絡電話 <span class="required-mark">*</span></label>
+            <input id="recipientPhone" type="tel" maxlength="30" autocomplete="tel" required placeholder="手機或市話">
+            <label for="shippingAddress">收件地址 <span class="required-mark">*</span></label>
+            <textarea id="shippingAddress" rows="2" maxlength="250" autocomplete="street-address" required placeholder="郵遞區號、縣市、區鄉鎮、路段及門牌"></textarea>
+            <label class="delivery-check"><input id="invoiceSameAsShipping" type="checkbox" checked> 發票寄送地址同收件地址</label>
+            <div id="invoiceAddressWrap" hidden>
+                <label for="invoiceAddress">發票寄送地址 <span class="required-mark">*</span></label>
+                <textarea id="invoiceAddress" rows="2" maxlength="250" placeholder="請輸入發票寄送地址"></textarea>
+            </div>
+        </div>
+
         <div
             id="checkoutMessage"
             class="checkout-message"
