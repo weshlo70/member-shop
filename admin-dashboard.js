@@ -383,7 +383,9 @@ function renderRequests(
               </div>
 
               ${
-                request.paymentMethod === "FaxCard"
+                request.paymentMethod === "StorePayment"
+                  ? `<div>🏪 現場收款人員：${escapeHtml(request.cashierName || "-")}</div>`
+                  : request.paymentMethod === "FaxCard"
                   ? `
                       <div>
                         📅 傳真日期：
@@ -802,9 +804,8 @@ function getPaymentMethodText(
   paymentMethod
 ) {
 
-  return paymentMethod === "FaxCard"
-    ? "傳真刷卡"
-    : "銀行匯款";
+  return paymentMethod === "FaxCard" ? "傳真刷卡" :
+    paymentMethod === "StorePayment" ? "現場商店付款" : "銀行匯款";
 }
 
 
@@ -1048,4 +1049,5 @@ renderRequests =
     );
 
   };
+
 
