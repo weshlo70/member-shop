@@ -1999,3 +1999,13 @@ button {
 .delivery-card .delivery-check {display:flex;align-items:center;gap:9px;cursor:pointer}
 .delivery-card .delivery-check input {width:18px;height:18px}
 .required-mark {color:#b42318}
+
+.company-logo {
+    display: inline-block;
+    padding: 10px 20px;
+}
+
+.company-logo img {
+    max-width: 100%;
+    object-fit: contain;
+}
