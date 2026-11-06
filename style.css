@@ -2009,3 +2009,30 @@ button {
     max-width: 100%;
     object-fit: contain;
 }
+
+/* 其他分頁的 LOGO */
+.subpage-logo {
+    display: flex;
+    align-items: center;
+    flex-shrink: 0;
+    margin-right: 15px;
+}
+
+.subpage-logo img {
+    height: 48px;
+    width: auto;
+    object-fit: contain;
+}
+
+/* 手機版 */
+@media (max-width: 600px) {
+
+    .subpage-logo {
+        margin-right: 8px;
+    }
+
+    .subpage-logo img {
+        height: 32px;
+    }
+
+}
