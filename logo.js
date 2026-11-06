@@ -1,14 +1,97 @@
+
 document.addEventListener("DOMContentLoaded", function () {
 
-    const logo = document.createElement("a");
-    logo.href = "index.html";
-    logo.className = "company-logo";
+    // 判斷是否為首頁
+    const isIndex =
+        location.pathname.endsWith("/index.html") ||
+        location.pathname.endsWith("/");
 
-    logo.innerHTML = `
-        <img src="images/logo.png"
-             alt="日暉國際度假村"
-             style="height:48px;width:auto;">
-    `;
+    // 建立 LOGO
+    function createLogo(height) {
 
-    document.body.prepend(logo);
+        const logo = document.createElement("a");
+
+        logo.href = "index.html";
+        logo.className = "company-logo";
+
+        const img = document.createElement("img");
+        img.src = "images/logo.png";
+        img.alt = "日暉國際度假村";
+
+        img.style.height = height + "px";
+        img.style.width = "auto";
+        img.style.maxWidth = "100%";
+        img.style.objectFit = "contain";
+
+        logo.appendChild(img);
+
+        return logo;
+    }
+
+    if (isIndex) {
+
+        // =========================
+        // 登入前：LOGO 在標題正上方
+        // =========================
+
+        const loginTitle = document.querySelector(
+            "#loginPage .login-card .logo"
+        );
+
+        if (loginTitle) {
+
+            const logo = createLogo(80);
+
+            logo.style.display = "block";
+            logo.style.textAlign = "center";
+            logo.style.marginBottom = "20px";
+
+            loginTitle.parentNode.insertBefore(
+                logo,
+                loginTitle
+            );
+        }
+
+        // =========================
+        // 登入後：LOGO 在標題左邊
+        // =========================
+
+        const headerTitle = document.querySelector(
+            "#homePage .header .header-title"
+        );
+
+        if (headerTitle) {
+
+            const logo = createLogo(48);
+
+            const wrapper = document.createElement("div");
+            wrapper.className = "header-brand";
+
+            wrapper.style.display = "flex";
+            wrapper.style.alignItems = "center";
+            wrapper.style.gap = "15px";
+            wrapper.style.minWidth = "0";
+
+            logo.style.display = "flex";
+            logo.style.alignItems = "center";
+            logo.style.flexShrink = "0";
+
+            // 將 LOGO 與標題包成同一組
+            headerTitle.parentNode.insertBefore(
+                wrapper,
+                headerTitle
+            );
+
+            wrapper.appendChild(logo);
+            wrapper.appendChild(headerTitle);
+        }
+
+    } else {
+
+        // 其他網頁維持原本方式
+        const logo = createLogo(48);
+        document.body.prepend(logo);
+
+    }
+
 });
