@@ -88,9 +88,27 @@ document.addEventListener("DOMContentLoaded", function () {
 
     } else {
 
-        // 其他網頁維持原本方式
+
+} else {
+
+    // 其他網頁：將 LOGO 放進原本的導覽列
+
+    const header = document.querySelector(
+        "header, .header"
+    );
+
+    if (header) {
+
         const logo = createLogo(48);
-        document.body.prepend(logo);
+
+        logo.classList.add("subpage-logo");
+
+        // 插入導覽列最左邊
+        header.prepend(logo);
+
+    }
+
+}
 
     }
 
