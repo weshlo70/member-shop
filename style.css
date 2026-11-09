@@ -2181,6 +2181,6 @@ button {
 /* 手機版 */
 @media (max-width: 600px) {
     #homePage .header .header-title {
-        font-size: 18px;
+        font-size: 20px;
     }
 }
