@@ -2092,3 +2092,61 @@ button {
     }
 
 }
+
+/* 登入後導覽列 */
+#homePage .header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+/* LOGO 與標題靠最左側 */
+#homePage .header-brand {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    gap: 12px;
+    min-width: 0;
+    margin-right: auto;
+}
+
+/* LOGO */
+#homePage .header-company-logo {
+    display: block;
+    width: 130px;
+    max-width: 35vw;
+    height: auto;
+    object-fit: contain;
+    flex-shrink: 1;
+}
+
+/* 標題 */
+#homePage .header-title {
+    text-align: left;
+    white-space: nowrap;
+}
+
+/* 登出按鈕靠右 */
+#homePage .logout-button {
+    flex-shrink: 0;
+    margin-left: auto;
+}
+
+/* 手機版 */
+@media (max-width: 600px) {
+
+    #homePage .header-brand {
+        gap: 8px;
+    }
+
+    #homePage .header-company-logo {
+        width: 85px;
+        max-width: 28vw;
+    }
+
+    #homePage .header-title {
+        font-size: 16px;
+    }
+}
