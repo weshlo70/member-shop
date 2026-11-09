@@ -2093,89 +2093,60 @@ button {
 
 }
 
-/* 登入後導覽列 */
+
+/* ========================================
+   INDEX 登入後導覽列：左 LOGO、中標題、右登出
+======================================== */
+
 #homePage .header {
-    display: flex;
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
     align-items: center;
-    justify-content: space-between;
-    width: 100%;
-    box-sizing: border-box;
-}
-
-/* LOGO 與標題靠最左側 */
-#homePage .header-brand {
-    display: flex;
-    align-items: center;
-    justify-content: flex-start;
-    gap: 12px;
-    min-width: 0;
-    margin-right: auto;
-}
-
-/* LOGO */
-#homePage .header-company-logo {
-    display: block;
-    width: 130px;
-    max-width: 35vw;
-    height: auto;
-    object-fit: contain;
-    flex-shrink: 1;
-}
-
-/* 標題 */
-#homePage .header-title {
-    text-align: left;
-    white-space: nowrap;
-}
-
-/* 登出按鈕靠右 */
-#homePage .logout-button {
-    flex-shrink: 0;
-    margin-left: auto;
-}
-
-
-/* 登入後首頁導覽列 */
-#homePage .header {
-    position: relative;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
     width: 100%;
     min-height: 90px;
-    padding: 12px 24px;
+    height: auto;
+    padding: 12px 20px;
     box-sizing: border-box;
 }
 
-/* 左側品牌區域 */
+/* 讓 LOGO、標題分別成為 Grid 項目 */
 #homePage .header-brand {
-    display: flex;
-    align-items: center;
-    min-width: 0;
+    display: contents;
 }
 
-/* LOGO 固定在左邊 */
+/* LOGO 固定最左邊 */
 #homePage .header-company-logo {
+    grid-column: 1;
+    grid-row: 1;
+    justify-self: start;
     display: block;
     width: 150px;
-    max-width: 30vw;
+    max-width: 100%;
     height: auto;
     object-fit: contain;
 }
 
-/* 標題固定在整個導覽列中央 */
-#homePage .header-title {
-    position: absolute;
-    left: 50%;
-    transform: translateX(-50%);
+/* 樂齡會員專區固定正中央 */
+#homePage .header .header-title {
+    grid-column: 2;
+    grid-row: 1;
+    justify-self: center;
+    position: static;
+    left: auto;
+    transform: none;
+    width: auto;
     margin: 0;
-    white-space: nowrap;
     text-align: center;
+    white-space: nowrap;
 }
 
 /* 登出固定最右邊 */
-#homePage .logout-button {
-    margin-left: auto;
+#homePage .header .logout-button {
+    grid-column: 3;
+    grid-row: 1;
+    justify-self: end;
+    position: static;
+    margin: 0;
     flex-shrink: 0;
 }
 
@@ -2185,18 +2156,18 @@ button {
     #homePage .header {
         min-height: 70px;
         padding: 10px 12px;
+        column-gap: 6px;
     }
 
     #homePage .header-company-logo {
         width: 85px;
-        max-width: 25vw;
     }
 
-    #homePage .header-title {
+    #homePage .header .header-title {
         font-size: 16px;
     }
 
-    #homePage .logout-button {
+    #homePage .header .logout-button {
         font-size: 14px;
     }
 }
