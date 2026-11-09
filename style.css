@@ -2134,19 +2134,70 @@ button {
     margin-left: auto;
 }
 
+
+/* 登入後首頁導覽列 */
+#homePage .header {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+    min-height: 90px;
+    padding: 12px 24px;
+    box-sizing: border-box;
+}
+
+/* 左側品牌區域 */
+#homePage .header-brand {
+    display: flex;
+    align-items: center;
+    min-width: 0;
+}
+
+/* LOGO 固定在左邊 */
+#homePage .header-company-logo {
+    display: block;
+    width: 150px;
+    max-width: 30vw;
+    height: auto;
+    object-fit: contain;
+}
+
+/* 標題固定在整個導覽列中央 */
+#homePage .header-title {
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+    margin: 0;
+    white-space: nowrap;
+    text-align: center;
+}
+
+/* 登出固定最右邊 */
+#homePage .logout-button {
+    margin-left: auto;
+    flex-shrink: 0;
+}
+
 /* 手機版 */
 @media (max-width: 600px) {
 
-    #homePage .header-brand {
-        gap: 8px;
+    #homePage .header {
+        min-height: 70px;
+        padding: 10px 12px;
     }
 
     #homePage .header-company-logo {
         width: 85px;
-        max-width: 28vw;
+        max-width: 25vw;
     }
 
     #homePage .header-title {
         font-size: 16px;
     }
+
+    #homePage .logout-button {
+        font-size: 14px;
+    }
 }
+
