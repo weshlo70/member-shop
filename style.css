@@ -24,6 +24,62 @@ input {
 }
 
 
+/* 登入前 LOGO */
+.login-company-logo {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    margin-bottom: 20px;
+}
+
+.login-company-logo img {
+    display: block;
+    width: 200px;
+    max-width: 100%;
+    height: auto;
+    object-fit: contain;
+}
+
+/* 登入後 LOGO + 標題 */
+#homePage .header-brand {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    min-width: 0;
+}
+
+#homePage .header-company-logo {
+    display: block;
+    width: 145px;
+    max-width: 100%;
+    height: auto;
+    object-fit: contain;
+    flex-shrink: 1;
+}
+
+/* 手機版 */
+@media (max-width: 600px) {
+
+    .login-company-logo img {
+        width: 150px;
+    }
+
+    #homePage .header-brand {
+        gap: 8px;
+    }
+
+    #homePage .header-company-logo {
+        width: 95px;
+    }
+
+    #homePage .header-title {
+        font-size: 16px;
+    }
+}
+
+
+
 button {
     cursor: pointer;
 }
