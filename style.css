@@ -2172,3 +2172,15 @@ button {
     }
 }
 
+/* INDEX 登入後標題字體大小 */
+#homePage .header .header-title {
+    font-size: 26px;
+    font-weight: 700;
+}
+
+/* 手機版 */
+@media (max-width: 600px) {
+    #homePage .header .header-title {
+        font-size: 18px;
+    }
+}
