@@ -453,6 +453,17 @@ $invoice("companyInvoiceTab").addEventListener("click", () => { selectedInvoiceT
 document.querySelectorAll('input[name="personalInvoiceMethod"]').forEach(el => el.addEventListener("change", updateInvoiceForm));
 $invoice("personalInvoiceSame").addEventListener("change", updateInvoiceForm);
 $invoice("companyInvoiceSame").addEventListener("change", updateInvoiceForm);
+
+// 預設選擇個人紙本發票
+document.querySelector(
+    'input[name="personalInvoiceMethod"][value="paper"]'
+).checked = true;
+
+// 發票寄送地址預設不同收件地址
+$invoice("personalInvoiceSame").checked = false;
+$invoice("companyInvoiceSame").checked = false;
+
+// 更新發票欄位顯示狀態
 updateInvoiceForm();
 
 async function submitOrder() {
