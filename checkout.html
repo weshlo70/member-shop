@@ -114,17 +114,49 @@
 
 
         <div class="checkout-card delivery-card">
-            <div class="card-title">收件與發票資訊</div>
+            <div class="card-title">收件資訊</div>
             <label for="recipientName">收件人姓名 <span class="required-mark">*</span></label>
-            <input id="recipientName" type="text" maxlength="60" autocomplete="name" required placeholder="請輸入收件人姓名">
+            <input id="recipientName" type="text" maxlength="60" autocomplete="name" placeholder="請輸入收件人姓名">
             <label for="recipientPhone">聯絡電話 <span class="required-mark">*</span></label>
-            <input id="recipientPhone" type="tel" maxlength="30" autocomplete="tel" required placeholder="手機或市話">
+            <input id="recipientPhone" type="tel" maxlength="30" autocomplete="tel" placeholder="手機或市話">
             <label for="shippingAddress">收件地址 <span class="required-mark">*</span></label>
-            <textarea id="shippingAddress" rows="2" maxlength="250" autocomplete="street-address" required placeholder="郵遞區號、縣市、區鄉鎮、路段及門牌"></textarea>
-            <label class="delivery-check"><input id="invoiceSameAsShipping" type="checkbox" checked> 發票寄送地址同收件地址</label>
-            <div id="invoiceAddressWrap" hidden>
-                <label for="invoiceAddress">發票寄送地址 <span class="required-mark">*</span></label>
-                <textarea id="invoiceAddress" rows="2" maxlength="250" placeholder="請輸入發票寄送地址"></textarea>
+            <textarea id="shippingAddress" rows="2" maxlength="250" autocomplete="street-address" placeholder="請輸入完整收件地址"></textarea>
+        </div>
+
+        <div class="checkout-card delivery-card invoice-card">
+            <div class="card-title">發票資訊</div>
+            <div class="invoice-tabs" role="tablist" aria-label="發票類型">
+                <button type="button" class="invoice-tab active" id="personalInvoiceTab" role="tab" aria-selected="true" aria-controls="personalInvoicePanel">個人發票</button>
+                <button type="button" class="invoice-tab" id="companyInvoiceTab" role="tab" aria-selected="false" aria-controls="companyInvoicePanel">公司發票</button>
+            </div>
+            <div id="personalInvoicePanel" role="tabpanel" aria-labelledby="personalInvoiceTab">
+                <div class="invoice-choices">
+                    <label><input type="radio" name="personalInvoiceMethod" value="paper" checked> 紙本發票</label>
+                    <label><input type="radio" name="personalInvoiceMethod" value="carrier"> 手機條碼載具</label>
+                </div>
+                <div id="personalPaperFields">
+                    <label class="delivery-check"><input id="personalInvoiceSame" type="checkbox" checked> 發票寄送地址同收件地址</label>
+                    <div id="personalInvoiceAddressWrap" hidden>
+                        <label for="personalInvoiceAddress">發票寄送地址 <span class="required-mark">*</span></label>
+                        <textarea id="personalInvoiceAddress" rows="2" maxlength="250" placeholder="請輸入發票寄送地址"></textarea>
+                    </div>
+                </div>
+                <div id="personalCarrierFields" hidden>
+                    <label for="invoiceCarrier">手機條碼載具 <span class="required-mark">*</span></label>
+                    <input id="invoiceCarrier" type="text" maxlength="8" placeholder="例如：/ABC1234" autocapitalize="characters">
+                    <small>請輸入以 / 開頭的 8 碼手機條碼。</small>
+                </div>
+            </div>
+            <div id="companyInvoicePanel" role="tabpanel" aria-labelledby="companyInvoiceTab" hidden>
+                <label for="companyTaxId">統一編號 <span class="required-mark">*</span></label>
+                <input id="companyTaxId" type="text" inputmode="numeric" maxlength="8" placeholder="請輸入8位數統一編號">
+                <label for="companyName">公司名稱 <span class="required-mark">*</span></label>
+                <input id="companyName" type="text" maxlength="120" placeholder="請輸入公司抬頭">
+                <label class="delivery-check"><input id="companyInvoiceSame" type="checkbox" checked> 發票寄送地址同收件地址</label>
+                <div id="companyInvoiceAddressWrap" hidden>
+                    <label for="companyInvoiceAddress">發票寄送地址 <span class="required-mark">*</span></label>
+                    <textarea id="companyInvoiceAddress" rows="2" maxlength="250" placeholder="請輸入公司發票寄送地址"></textarea>
+                </div>
             </div>
         </div>
 

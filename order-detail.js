@@ -276,6 +276,18 @@ function renderOrder(order) {
             <div class="card-title">
                 訂單資訊
             </div>
+            ${order.delivery && order.delivery.recipientName ? `
+            <div class="info-row"><span>收件人</span><strong>${escapeHtml(order.delivery.recipientName)}</strong></div>
+            <div class="info-row"><span>聯絡電話</span><strong>${escapeHtml(order.delivery.recipientPhone)}</strong></div>
+            <div class="info-row"><span>收件地址</span><strong>${escapeHtml(order.delivery.shippingAddress)}</strong></div>
+            <div class="info-row"><span>發票類型</span><strong>${order.delivery.invoiceType === 'company' ? '公司發票' : (order.delivery.invoiceType === 'personal' ? '個人發票' : '舊訂單')}</strong></div>
+            <div class="info-row"><span>發票方式</span><strong>${escapeHtml(({paper:'紙本',carrier:'手機條碼載具',company:'公司發票'})[order.delivery.invoiceMethod] || '')}</strong></div>
+            ${order.delivery.invoiceCarrier ? `<div class="info-row"><span>手機條碼載具</span><strong>${escapeHtml(order.delivery.invoiceCarrier)}</strong></div>` : ''}
+            ${order.delivery.companyTaxId ? `<div class="info-row"><span>統一編號</span><strong>${escapeHtml(order.delivery.companyTaxId)}</strong></div>` : ''}
+            ${order.delivery.companyName ? `<div class="info-row"><span>公司名稱</span><strong>${escapeHtml(order.delivery.companyName)}</strong></div>` : ''}
+            ${order.delivery.invoiceAddress ? `<div class="info-row"><span>發票寄送地址</span><strong>${escapeHtml(order.delivery.invoiceAddress)}</strong></div>` : ''}
+            ` : ''}
+
 
 
             <div class="info-row">

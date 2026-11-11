@@ -431,10 +431,29 @@ document.getElementById(
 );
 
 
-const invoiceSameCheckbox = document.getElementById("invoiceSameAsShipping");
-invoiceSameCheckbox.addEventListener("change", () => {
-    document.getElementById("invoiceAddressWrap").hidden = invoiceSameCheckbox.checked;
-});
+// 發票頁籤與欄位切換（保留原本下單流程）
+let selectedInvoiceType = "personal";
+const $invoice = id => document.getElementById(id);
+function updateInvoiceForm() {
+    const personal = selectedInvoiceType === "personal";
+    const paper = document.querySelector('input[name="personalInvoiceMethod"]:checked').value === "paper";
+    $invoice("personalInvoicePanel").hidden = !personal;
+    $invoice("companyInvoicePanel").hidden = personal;
+    $invoice("personalInvoiceTab").classList.toggle("active", personal);
+    $invoice("companyInvoiceTab").classList.toggle("active", !personal);
+    $invoice("personalInvoiceTab").setAttribute("aria-selected", String(personal));
+    $invoice("companyInvoiceTab").setAttribute("aria-selected", String(!personal));
+    $invoice("personalPaperFields").hidden = !paper;
+    $invoice("personalCarrierFields").hidden = paper;
+    $invoice("personalInvoiceAddressWrap").hidden = $invoice("personalInvoiceSame").checked;
+    $invoice("companyInvoiceAddressWrap").hidden = $invoice("companyInvoiceSame").checked;
+}
+$invoice("personalInvoiceTab").addEventListener("click", () => { selectedInvoiceType = "personal"; updateInvoiceForm(); });
+$invoice("companyInvoiceTab").addEventListener("click", () => { selectedInvoiceType = "company"; updateInvoiceForm(); });
+document.querySelectorAll('input[name="personalInvoiceMethod"]').forEach(el => el.addEventListener("change", updateInvoiceForm));
+$invoice("personalInvoiceSame").addEventListener("change", updateInvoiceForm);
+$invoice("companyInvoiceSame").addEventListener("change", updateInvoiceForm);
+updateInvoiceForm();
 
 async function submitOrder() {
 
@@ -498,23 +517,42 @@ async function submitOrder() {
         );
 
 
+    const shippingAddress = $invoice("shippingAddress").value.trim();
+    const isPersonal = selectedInvoiceType === "personal";
+    const invoiceMethod = isPersonal
+        ? document.querySelector('input[name="personalInvoiceMethod"]:checked').value
+        : "company";
+    const invoiceAddress = invoiceMethod === "carrier" ? "" :
+        (isPersonal ? ($invoice("personalInvoiceSame").checked ? shippingAddress : $invoice("personalInvoiceAddress").value.trim())
+                    : ($invoice("companyInvoiceSame").checked ? shippingAddress : $invoice("companyInvoiceAddress").value.trim()));
     const delivery = {
-        recipientName: document.getElementById("recipientName").value.trim(),
-        recipientPhone: document.getElementById("recipientPhone").value.trim(),
-        shippingAddress: document.getElementById("shippingAddress").value.trim(),
-        invoiceAddress: invoiceSameCheckbox.checked
-            ? document.getElementById("shippingAddress").value.trim()
-            : document.getElementById("invoiceAddress").value.trim()
+        recipientName: $invoice("recipientName").value.trim(),
+        recipientPhone: $invoice("recipientPhone").value.trim(),
+        shippingAddress,
+        invoiceType: selectedInvoiceType,
+        invoiceMethod,
+        invoiceAddress,
+        invoiceCarrier: invoiceMethod === "carrier" ? $invoice("invoiceCarrier").value.trim().toUpperCase() : "",
+        companyTaxId: !isPersonal ? $invoice("companyTaxId").value.trim() : "",
+        companyName: !isPersonal ? $invoice("companyName").value.trim() : ""
     };
-    if (!delivery.recipientName || !delivery.recipientPhone ||
-        !delivery.shippingAddress || !delivery.invoiceAddress) {
-        document.getElementById("checkoutMessage").textContent = "請完整填寫收件人、電話、收件地址及發票地址";
-        return;
+    const message = $invoice("checkoutMessage");
+    if (!delivery.recipientName || !delivery.recipientPhone || !shippingAddress) {
+        message.textContent = "請完整填寫收件人、聯絡電話及收件地址"; return;
     }
     if (!/^[0-9+()\-\s]{7,30}$/.test(delivery.recipientPhone)) {
-        document.getElementById("checkoutMessage").textContent = "請輸入有效的聯絡電話";
-        return;
+        message.textContent = "請輸入有效的聯絡電話"; return;
     }
+    if (invoiceMethod !== "carrier" && !invoiceAddress) {
+        message.textContent = "請填寫發票寄送地址"; return;
+    }
+    if (invoiceMethod === "carrier" && !/^\/[0-9A-Z.+\-]{7}$/.test(delivery.invoiceCarrier)) {
+        message.textContent = "請輸入正確的8碼手機條碼載具（以 / 開頭）"; return;
+    }
+    if (!isPersonal && (!/^\d{8}$/.test(delivery.companyTaxId) || !delivery.companyName)) {
+        message.textContent = "請填寫8位數統一編號及公司名稱"; return;
+    }
+    message.textContent = "";
 
     button.disabled = true;
 

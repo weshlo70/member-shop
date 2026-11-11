@@ -2184,3 +2184,18 @@ button {
         font-size: 20px;
     }
 }
+
+/* 結帳發票頁籤（限定結帳畫面） */
+.invoice-card [hidden] { display: none !important; }
+.invoice-tabs { display:grid; grid-template-columns:1fr 1fr; gap:8px; margin-bottom:14px; }
+.invoice-tab { padding:12px 8px; border:1px solid #cbd5e1; border-radius:8px; background:#f8fafc; color:#334155; font:inherit; font-weight:600; cursor:pointer; }
+.invoice-tab.active { background:#263d34; border-color:#263d34; color:white; }
+.invoice-choices { display:flex; flex-wrap:wrap; gap:12px 22px; margin-bottom:12px; }
+.invoice-choices label { display:flex; align-items:center; gap:7px; cursor:pointer; }
+.invoice-choices input { width:18px; height:18px; }
+.invoice-card [role="tabpanel"] { display:flex; flex-direction:column; gap:10px; }
+.invoice-card small { color:#64748b; }
+@media(max-width:600px) { .invoice-tabs { gap:6px; } .invoice-tab { padding:11px 6px; } }
+.invoice-card .invoice-choices input[type="radio"] { width:18px; height:18px; padding:0; flex:0 0 18px; accent-color:#263d34; }
+.invoice-card input[type="checkbox"] { accent-color:#263d34; }
+.invoice-card .info-row strong { overflow-wrap:anywhere; }
