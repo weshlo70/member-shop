@@ -138,8 +138,14 @@ function updatePaymentMethodFields() {
         storeFields.classList.add("hidden");
         bankFields.classList.remove("hidden");
 
-        help.textContent =
-            "請先完成匯款，再填寫下方匯款資料。";
+       help.innerHTML = `
+       請先完成匯款，再填寫下方匯款資料。<br><br>
+       <strong>電匯／轉帳資訊</strong><br>
+       戶名：日暉池上股份有限公司台東分公司<br>
+       往來銀行：彰化銀行西門分行<br>
+       銀行代號：009<br>
+       帳號：503-601-153-852-00
+`;
     }
 }
 
