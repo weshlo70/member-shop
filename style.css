@@ -2344,3 +2344,24 @@ button {
         padding: 7px 11px;
     }
 }
+
+/* 購物須知：底部置中黑色文字 */
+.shopping-guide-footer {
+    width: 100%;
+    text-align: center;
+    margin: 20px auto;
+    padding: 10px 0;
+    border: none;
+}
+
+.shopping-guide-footer a {
+    display: inline-block;
+    color: #222;
+    font-size: 18px;
+    font-weight: 700;
+    text-decoration: none;
+}
+
+.shopping-guide-footer a:hover {
+    color: #555;
+}
