@@ -2199,3 +2199,9 @@ button {
 .invoice-card .invoice-choices input[type="radio"] { width:18px; height:18px; padding:0; flex:0 0 18px; accent-color:#263d34; }
 .invoice-card input[type="checkbox"] { accent-color:#263d34; }
 .invoice-card .info-row strong { overflow-wrap:anywhere; }
+
+
+/* 商品說明保留 Google Sheets 的換行格式 */
+.product-description {
+    white-space: pre-line;
+}
