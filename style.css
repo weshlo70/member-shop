@@ -2205,3 +2205,142 @@ button {
 .product-description {
     white-space: pre-line;
 }
+
+
+/* =========================
+   購物須知：商城及會員首頁底部連結
+========================= */
+
+.shopping-guide-footer {
+    text-align: center;
+    padding: 28px 12px 18px;
+    margin-top: 26px;
+    border-top: 1px solid #e5e7eb;
+}
+
+.shopping-guide-footer a {
+    color: #294238;
+    font-size: 15px;
+    font-weight: 600;
+    text-decoration: underline;
+    text-underline-offset: 4px;
+}
+
+/* =========================
+   購物須知獨立頁
+========================= */
+
+.guide-container {
+    max-width: 960px;
+    margin: 0 auto;
+    padding-bottom: 50px;
+}
+
+.guide-intro {
+    margin: 24px 0;
+}
+
+.guide-intro h1 {
+    font-size: clamp(24px, 4vw, 32px);
+    margin: 0 0 10px;
+    color: #20362e;
+}
+
+.guide-intro p {
+    color: #68727a;
+    margin: 0;
+    line-height: 1.7;
+}
+
+.guide-nav {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 9px;
+    margin: 22px 0 26px;
+}
+
+.guide-nav a {
+    display: inline-block;
+    border: 1px solid #d8e1dc;
+    border-radius: 24px;
+    padding: 8px 13px;
+    color: #294238;
+    text-decoration: none;
+    background: white;
+    font-size: 14px;
+}
+
+.guide-section {
+    background: #fff;
+    border-radius: 18px;
+    padding: 24px 26px;
+    margin-bottom: 16px;
+    box-shadow: 0 4px 20px rgba(0,0,0,.035);
+}
+
+.guide-section h2 {
+    margin: 0 0 16px;
+    color: #263e34;
+    font-size: 20px;
+}
+
+.guide-section p {
+    margin: 0 0 12px;
+    line-height: 1.9;
+    overflow-wrap: anywhere;
+}
+
+.guide-section p:last-child {
+    margin-bottom: 0;
+}
+
+.guide-section .guide-note {
+    font-size: 14px;
+    color: #6a7177;
+}
+
+.guide-section .guide-bullet {
+    padding-left: 1.2em;
+    text-indent: -1.2em;
+}
+
+.guide-bottom {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 12px;
+    margin: 28px 0;
+}
+
+.guide-bottom a {
+    padding: 12px 18px;
+    border-radius: 10px;
+    text-decoration: none;
+    font-weight: 600;
+}
+
+.guide-return {
+    background: #263e34;
+    color: #fff;
+}
+
+.guide-home {
+    background: #eef1ef;
+    color: #263e34;
+}
+
+/* 手機版 */
+@media (max-width: 600px) {
+    .guide-section {
+        padding: 20px 17px;
+    }
+
+    .guide-nav {
+        gap: 7px;
+    }
+
+    .guide-nav a {
+        font-size: 13px;
+        padding: 7px 11px;
+    }
+}
