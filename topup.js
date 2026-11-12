@@ -122,8 +122,15 @@ function updatePaymentMethodFields() {
         faxFields.classList.remove("hidden");
         storeFields.classList.add("hidden");
 
-        help.textContent =
-            "請依飯店提供的刷卡授權書完成傳真，再填寫傳真日期、時間與信用卡末四碼。";
+        help.innerHTML = `
+        請依飯店提供的刷卡授權書完成傳真，再填寫傳真日期、時間與信用卡末四碼。
+        <br><br>
+        <a href="files/日暉傳真刷卡授權書.pdf"
+        download
+        style="color:#0066cc; font-weight:bold; text-decoration:underline;">
+       📄 下載傳真刷卡授權書
+    </a>
+`;
 
     }
     else if (paymentMethod === "StorePayment") {
